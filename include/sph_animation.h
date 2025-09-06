@@ -7,6 +7,7 @@
 
 #include "physics_animation.h"
 #include "particle_system.h"
+#include "collisions.h"
 
 class SPHAnimation : public PhysicsAnimation {
 public:
@@ -17,18 +18,23 @@ public:
 
 	ParticleSystem2DPtr get_particle_system() const { return _particle_system; }
 	ParticleSystem2DPtr get_particle_system() { return _particle_system; }
+	void resize_particle_system(size_t n);
 
 protected:
 	void on_update(const float delta) override;
 	void accumulate_forces() override;
 	void integrate(const float delta) override;
-	void handle_collisions() override;
-	void apply_constraints() override;
+	void handle_collisions(const float delta) override;
+	void apply_constraints(const float delta) override;
 	void update_graphics() override;
 
 private:
 	ParticleSystem2DPtr _particle_system;
+	std::vector<cato::Vec2> _new_velocities;
+	std::vector<cato::Vec2> _new_positions;
 
+
+	void _update_to_new_state();
 
 };
 

@@ -22,11 +22,11 @@ void PhysicsAnimation::integrate(const float delta) {
 	// Default implementation does nothing
 }
 
-void PhysicsAnimation::handle_collisions() {
+void PhysicsAnimation::handle_collisions(const float delta) {
 	// Default implementation does nothing
 }
 
-void PhysicsAnimation::apply_constraints() {
+void PhysicsAnimation::apply_constraints(const float delta) {
 	// Default implementation does nothing
 }
 

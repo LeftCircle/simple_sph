@@ -37,7 +37,9 @@ public:
 	const cato::Vec2& get_force(int particle_n) const { return _forces[particle_n]; };
 	cato::Vec2& get_force(int particle_n) { return _forces[particle_n]; };
 
-
+	const std::vector<cato::Vec2>& get_positions() const { return _positions; }
+	const std::vector<cato::Vec2>& get_velocities() const { return _velocities; }
+	const std::vector<cato::Vec2>& get_forces() const { return _forces; }
 
 private:
 	size_t _n_particles;

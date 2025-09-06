@@ -14,8 +14,8 @@ protected:
 	virtual void on_update(const float delta) = 0;
 	virtual void accumulate_forces() = 0;
 	virtual void integrate(const float delta) = 0;
-	virtual void handle_collisions() = 0;
-	virtual void apply_constraints() = 0;
+	virtual void handle_collisions(const float delta) = 0;
+	virtual void apply_constraints(const float delta) = 0;
 	virtual void update_graphics() = 0;
 	
 };
