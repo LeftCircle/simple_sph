@@ -21,11 +21,31 @@ void SPHAnimation::on_update(const float delta) {
 }
 
 void SPHAnimation::accumulate_forces() {
-	// Placeholder for force accumulation logic
+	for (size_t i = 0; i < _particle_system->n_particles(); ++i) {
+		cato::Vec2& force = _particle_system->get_force(i);
+		force.x = 0.0f;
+		force.y = -9.81f * _particle_system->mass();
+		//_particle_system->get_force(i) = force;
+	}
 }
 
 void SPHAnimation::integrate(const float delta) {
-	// Placeholder for integration logic (e.g., Euler, Verlet)
+	// Simple Euler integration
+	for (size_t i = 0; i < _particle_system->n_particles(); i++) {
+		cato::Vec2& velocity = _particle_system->get_velocity(i);
+		cato::Vec2& position = _particle_system->get_position(i);
+		cato::Vec2 force = _particle_system->get_force(i);
+
+		velocity.x += (force.x / _particle_system->mass()) * delta;
+		velocity.y += (force.y / _particle_system->mass()) * delta;
+
+		position.x += velocity.x * delta;
+		position.y += velocity.y * delta;
+
+		// Reset force for next accumulation
+		force.x = 0.0f;
+		force.y = 0.0f;
+	}
 }
 
 void SPHAnimation::handle_collisions() {
@@ -38,7 +58,7 @@ void SPHAnimation::apply_constraints() {
 
 void SPHAnimation::update_graphics() {
 	for (size_t i = 0; i < _particle_system->n_particles(); ++i) {
-		std::array<float, 2> pos = _particle_system->get_position(i);
-		_particle_system->draw_circle(pos[0], pos[1], _particle_system->radius());
+		cato::Vec2 pos = _particle_system->get_position(i);
+		_particle_system->draw_circle(pos.x, pos.y, _particle_system->radius());
 	}
 }

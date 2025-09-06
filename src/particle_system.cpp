@@ -1,7 +1,7 @@
 #include "particle_system.h"
 
 ParticleSystem2D::ParticleSystem2D()
-	: _n_particles(0), _radius(30.0), _mass(1.0) {
+	: _n_particles(0), _radius(10.0), _mass(1.0) {
 }
 
 ParticleSystem2D::~ParticleSystem2D() {
@@ -20,9 +20,9 @@ void ParticleSystem2D::clear_particles() {
 
 void ParticleSystem2D::resize(const size_t n) {
 	_n_particles = n;
-	_positions.resize(2 * _n_particles, 0.0f); // 2D: x, y
-	_velocities.resize(2 * _n_particles, 0.0f);
-	_forces.resize(2 * _n_particles, 0.0f);
+	_positions.resize(_n_particles, cato::Vec2{ 0.0f, 0.0f });
+	_velocities.resize(_n_particles, cato::Vec2{ 0.0f, 0.0f });
+	_forces.resize(_n_particles, cato::Vec2{ 0.0f, 0.0f });
 }
 
 double ParticleSystem2D::radius() const {
@@ -41,39 +41,16 @@ void ParticleSystem2D::set_mass(const double m) {
 	_mass = m;
 }
 
-std::array<float, 2> ParticleSystem2D::get_position(int particle_n) const {
-	return { _positions[2 * particle_n], _positions[2 * particle_n + 1] };
-}
-
-std::array<float, 2> ParticleSystem2D::get_position(int particle_n) {
-	return { _positions[2 * particle_n], _positions[2 * particle_n + 1] };
-}
-
-std::array<float, 2> ParticleSystem2D::get_velocity(int particle_n) const {
-	return { _velocities[2 * particle_n], _velocities[2 * particle_n + 1] };
-}
-
-std::array<float, 2> ParticleSystem2D::get_velocity(int particle_n) {
-	return { _velocities[2 * particle_n], _velocities[2 * particle_n + 1] };
-}
-
-std::array<float, 2> ParticleSystem2D::get_force(int particle_n) const {
-	return { _forces[2 * particle_n], _forces[2 * particle_n + 1] };
-}
-
-std::array<float, 2> ParticleSystem2D::get_force(int particle_n) {
-	return { _forces[2 * particle_n], _forces[2 * particle_n + 1] };
-}
 
 void ParticleSystem2D::randomize_particles(const float x_min, const float x_max,
 	const float y_min, const float y_max) {
 	for (size_t i = 0; i < _n_particles; ++i) {
-		_positions[2 * i] = x_min + static_cast<float>(rand()) / (static_cast<float>(RAND_MAX / (x_max - x_min)));
-		_positions[2 * i + 1] = y_min + static_cast<float>(rand()) / (static_cast<float>(RAND_MAX / (y_max - y_min)));
-		_velocities[2 * i] = 0.0f;
-		_velocities[2 * i + 1] = 0.0f;
-		_forces[2 * i] = 0.0f;
-		_forces[2 * i + 1] = 0.0f;
+		_positions[i].x = x_min + static_cast<float>(rand()) / (static_cast<float>(RAND_MAX / (x_max - x_min)));
+		_positions[i].y = y_min + static_cast<float>(rand()) / (static_cast<float>(RAND_MAX / (y_max - y_min)));
+		_velocities[i].x = 0.0f;
+		_velocities[i].y = 0.0f;
+		_forces[i].x = 0.0f;
+		_forces[i].y = 0.0f;
 	}
 }
 

@@ -8,7 +8,7 @@
 #include <memory>
 #include <math.h>
 
-
+#include "vector.h"
 #include "physics_animation.h"
 
 class ParticleSystem2D {
@@ -28,12 +28,16 @@ public:
 
 	double mass() const;
 	void set_mass(const double m);
-	std::array<float, 2> get_position(int particle_n) const;
-	std::array<float, 2> get_position(int particle_n);
-	std::array<float, 2> get_velocity(int particle_n) const;
-	std::array<float, 2> get_velocity(int particle_n);
-	std::array<float, 2> get_force(int particle_n) const;
-	std::array<float, 2> get_force(int particle_n);
+	const cato::Vec2& get_position(int particle_n) const { return _positions[particle_n]; };
+	cato::Vec2& get_position(int particle_n) { return _positions[particle_n]; };
+	
+	const cato::Vec2& get_velocity(int particle_n) const { return _velocities[particle_n]; };
+	cato::Vec2& get_velocity(int particle_n) { return _velocities[particle_n]; };
+	
+	const cato::Vec2& get_force(int particle_n) const { return _forces[particle_n]; };
+	cato::Vec2& get_force(int particle_n) { return _forces[particle_n]; };
+
+
 
 private:
 	size_t _n_particles;
@@ -41,9 +45,9 @@ private:
 	double _mass;
 
 	// Basic vectors containing the x,y positions, velocities, and forces
-	std::vector<float> _positions;
-	std::vector<float> _velocities;
-	std::vector<float> _forces;
+	std::vector<cato::Vec2> _positions;
+	std::vector<cato::Vec2> _velocities;
+	std::vector<cato::Vec2> _forces;
 
 };
 typedef std::shared_ptr<ParticleSystem2D> ParticleSystem2DPtr;
