@@ -5,15 +5,31 @@
 #include "command_line_parser.h"
 #include "tests.h"
 
-SPHAnimationPtr sph_animation;
-
 const int WINDOW_WIDTH = 800;
 const int WINDOW_HEIGHT = 600;
+
+SPHAnimationPtr sph_animation;
+
+bool advance_sim = false;
+
+
+void keyboard(unsigned char key, int x, int y) {
+	if (key == 27) { // Escape key
+		exit(0);
+	}
+	else if (key == ' ') { // Space key to toggle simulation
+		advance_sim = !advance_sim;
+		std::cout << "Simulation " << (advance_sim ? "resumed." : "paused.") << std::endl;
+	}
+}
 
 void display() {
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	sph_animation->update(0.016f);
+	if (advance_sim) {
+		sph_animation->update(0.016f);
+		advance_sim = false; // Step only once per spacebar press
+	}
 
 	glutSwapBuffers();
 	glutPostRedisplay();
@@ -68,6 +84,7 @@ int main(int argc, char** argv) {
 	sph_animation->get_particle_system()->randomize_particles(0.0f, 800.0f, 0.0f, 600.0f);
 
 	glutReshapeFunc(doReshape);
+	glutKeyboardFunc(keyboard);
 	glutDisplayFunc(display);
 	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 	glutMainLoop();
