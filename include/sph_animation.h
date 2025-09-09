@@ -30,8 +30,6 @@ protected:
 
 private:
 	ParticleSystem2DPtr _particle_system;
-	std::vector<cato::Vec2> _new_velocities;
-	std::vector<cato::Vec2> _new_positions;
 
 
 	void _update_to_new_state();

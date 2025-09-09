@@ -1,6 +1,9 @@
 #include <iostream>
 #include <cstdlib>
+
 #include "sph_animation.h"
+#include "command_line_parser.h"
+#include "tests.h"
 
 SPHAnimationPtr sph_animation;
 
@@ -18,34 +21,40 @@ void display() {
 
 // From https://people.computing.clemson.edu/~dhouse/courses/817/index.html examples
 void doReshape(int w, int h){
-  int vpw, vph;
-  
-  float aspect = float(WINDOW_WIDTH) / float(WINDOW_HEIGHT);
-  if(float(w) / float(h) > aspect){
-    vph = h;
-    vpw = int(aspect * h + 0.5);
-  }
-  else{
-    vpw = w;
-    vph = int(w / aspect + 0.5);
-  }
-  
-  glViewport(0, 0, vpw, vph);
-  
-  glMatrixMode(GL_PROJECTION);
-  glLoadIdentity();
-  gluOrtho2D(0, WINDOW_WIDTH, 0, WINDOW_HEIGHT);
-  
-  glMatrixMode(GL_MODELVIEW);
+	int vpw, vph;
+
+	float aspect = float(WINDOW_WIDTH) / float(WINDOW_HEIGHT);
+	if(float(w) / float(h) > aspect){
+		vph = h;
+		vpw = int(aspect * h + 0.5);
+	}
+	else{
+		vpw = w;
+		vph = int(w / aspect + 0.5);
+	}
+
+	glViewport(0, 0, vpw, vph);
+
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	gluOrtho2D(0, WINDOW_WIDTH, 0, WINDOW_HEIGHT);
+
+	glMatrixMode(GL_MODELVIEW);
 }
 
 
 int main(int argc, char** argv) {
+	CommandLineParser cmd_parser(argc, argv);
+	if (cmd_parser.has_flag("-t")){
+		Tests::run_all_tests();
+		return 0;
+	}
+
 	if (argc < 2) {
-        std::cout << "Usage: " << argv[0] << " <num_particles>\n";
-        return 1;
-    }
-    int num_particles = std::atoi(argv[1]);
+		std::cout << "Usage: " << argv[0] << " <num_particles>\n";
+		return 1;
+	}
+	int num_particles = std::atoi(argv[1]);
 
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);

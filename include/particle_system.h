@@ -40,7 +40,10 @@ public:
 	const std::vector<cato::Vec2>& get_positions() const { return _positions; }
 	const std::vector<cato::Vec2>& get_velocities() const { return _velocities; }
 	const std::vector<cato::Vec2>& get_forces() const { return _forces; }
-
+	std::vector<cato::Vec2>& get_positions() { return _positions; }
+	std::vector<cato::Vec2>& get_velocities() { return _velocities; }
+	std::vector<cato::Vec2>& get_forces() { return _forces; }
+	
 private:
 	size_t _n_particles;
 	double _radius;
