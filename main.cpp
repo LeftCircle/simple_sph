@@ -10,7 +10,7 @@ const int WINDOW_HEIGHT = 600;
 
 SPHAnimationPtr sph_animation;
 
-bool advance_sim = false;
+bool advance_sim = true;
 
 
 void keyboard(unsigned char key, int x, int y) {
@@ -23,16 +23,22 @@ void keyboard(unsigned char key, int x, int y) {
 	}
 }
 
+
 void display() {
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	if (advance_sim) {
-		sph_animation->update(0.016f);
-		advance_sim = false; // Step only once per spacebar press
-	}
-
+	sph_animation->update_graphics();
 	glutSwapBuffers();
 	glutPostRedisplay();
+
+}
+
+void idle() {
+	if (advance_sim) {
+		for (int i = 0; i < 10; ++i) // Update multiple times per frame for stability
+			sph_animation->update(0.016f);
+	}
+
 }
 
 // From https://people.computing.clemson.edu/~dhouse/courses/817/index.html examples
@@ -86,6 +92,7 @@ int main(int argc, char** argv) {
 	glutReshapeFunc(doReshape);
 	glutKeyboardFunc(keyboard);
 	glutDisplayFunc(display);
+	glutIdleFunc(idle); // Occurs when no user input is occuring or too time consuming to stop events -> less likely for lag spikes
 	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 	glutMainLoop();
 

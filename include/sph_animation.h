@@ -19,6 +19,7 @@ public:
 	ParticleSystem2DPtr get_particle_system() const { return _particle_system; }
 	ParticleSystem2DPtr get_particle_system() { return _particle_system; }
 	void resize_particle_system(size_t n);
+	void update_graphics() override;
 
 protected:
 	void on_update(const float delta) override;
@@ -26,7 +27,6 @@ protected:
 	void integrate(const float delta) override;
 	void handle_collisions(const float delta) override;
 	void apply_constraints(const float delta) override;
-	void update_graphics() override;
 
 private:
 	ParticleSystem2DPtr _particle_system;

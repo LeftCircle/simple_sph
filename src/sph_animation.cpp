@@ -21,7 +21,6 @@ void SPHAnimation::on_update(const float delta) {
 	integrate(delta);
 	handle_collisions(delta);
 	apply_constraints(delta);
-	update_graphics();
 }
 
 void SPHAnimation::accumulate_forces() {
@@ -29,7 +28,6 @@ void SPHAnimation::accumulate_forces() {
 		cato::Vec2& force = _particle_system->get_force(i);
 		force.x = 0.0f;
 		force.y = -9.81f * _particle_system->mass();
-		//_particle_system->get_force(i) = force;
 	}
 }
 
@@ -40,7 +38,12 @@ void SPHAnimation::integrate(const float delta) {
 		cato::Vec2& position = _particle_system->get_position(i);
 		cato::Vec2& force = _particle_system->get_force(i);
 
-		velocity += force * delta / _particle_system->mass();
+		// position += velocity * delta * 0.5;
+		// velocity += force * delta / _particle_system->mass();
+		// position += velocity * delta * 0.5;
+
+
+		velocity += force * delta / _particle_system->mass() * 0.1;
 		position += velocity * delta;
 
 		// Reset force for next accumulation
@@ -54,8 +57,7 @@ void SPHAnimation::handle_collisions(const float delta) {
 	CollisionHandler::apply_boundary_collisions(
 		_particle_system->get_positions(),
 		_particle_system->get_velocities(),
-		delta,
-		0.0f, 800.0f, 0.0f, 600.0f
+		0.0f, 800.0f, 0.0f, 600.0f, 0.9f
 	);
 }
 
