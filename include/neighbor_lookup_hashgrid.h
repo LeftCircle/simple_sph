@@ -22,6 +22,14 @@ public:
         T radius,
         const typename PointNeighborLookup3<T>::NeighborFunc& callback) const override;
 
+    size_t get_hashkey_from_position(const cato::Vec3T<T>& position) const;
+
+   private:
+    cato::Vec3i _get_bucket_index(const cato::Vec3T<T>& position) const;
+    size_t _get_hashkey_from_bucket_index(const cato::Vec3i& bucketIndex) const;
+    // Fills in the 8 nearby buckets for a given point. Assumes the diamter of the point is equal
+    // to the cell size
+    void _get_neighboring_buckets(const cato::Vec3T<T>& position, size_t* bucket_indeces) const;
 
 private:
     double _cellSize;
@@ -33,6 +41,9 @@ private:
     std::vector<std::vector<size_t>> _buckets;
 
 };
+
+using PointNeighborLookupHashGrid3f = PointNeighborLookupHashGrid3<float>;
+using PointNeighborLookupHashGrid3d = PointNeighborLookupHashGrid3<double>;
 
 
 #endif

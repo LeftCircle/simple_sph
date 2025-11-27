@@ -37,6 +37,8 @@ template<typename T>
 struct Vec3T{
 	T x, y, z;
 
+	Vec3T(T x, T y, T z) : x(x), y(y), z(z) {};
+
 	T magnitude() const {
 		return std::sqrt(x * x + y * y + z * z);
 	}
@@ -82,6 +84,7 @@ struct Vec3T{
 using Vec3f = Vec3T<float>;
 using Vec3d = Vec3T<double>;
 using Vec3i = Vec3T<int>;
+using Vec3s = Vec3T<size_t>;
 
 }; // Namespace cato
 	
