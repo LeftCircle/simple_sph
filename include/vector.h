@@ -31,6 +31,58 @@ struct Vec2{
 		return *this;
 	}
 };
+
+
+template<typename T>
+struct Vec3T{
+	T x, y, z;
+
+	T magnitude() const {
+		return std::sqrt(x * x + y * y + z * z);
+	}
+
+	Vec3T operator+(const Vec3T& v) const {
+		return Vec3T{ x + v.x, y + v.y, z + v.z };
+	}
+
+	Vec3T operator+=(const Vec3T& v) {
+		x += v.x;
+		y += v.y;
+		z += v.z;
+		return *this;
+	}
+
+	Vec3T operator-(const Vec3T& v) const {
+		return Vec3T{ x - v.x, y - v.y, z - v.z };
+	}
+
+	Vec3T operator-=(const Vec3T& v) {
+		x -= v.x;
+		y -= v.y;
+		z -= v.z;
+		return *this;
+	}
+
+	Vec3T operator-() const {
+		return Vec3T{ -x, -y, -z };
+	}
+
+	Vec3T operator*(T s) const {
+		return Vec3T{ x * s, y * s, z * s };
+	}
+
+	Vec3T operator/(T s) const {
+		return Vec3T{ x / s, y / s, z / s };
+	}
+
 };
+
+
+// Type alias for common vector types
+using Vec3f = Vec3T<float>;
+using Vec3d = Vec3T<double>;
+using Vec3i = Vec3T<int>;
+
+}; // Namespace cato
 	
 #endif // CATON_VECTOR_H
