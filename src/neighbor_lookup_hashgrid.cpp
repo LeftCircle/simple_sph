@@ -17,6 +17,34 @@ void PointNeighborLookupHashGrid3<T>::build(const std::vector<cato::Vec3T<T>>& p
 }
 
 template<typename T>
+void PointNeighborLookupHashGrid3<T>::for_each_nearby_point(
+	const cato::Vec3T<T>& origin,
+	T radius,
+	const ForEachNeighborFunc& callback) const {
+	
+	if (_buckets.empty()) {
+		return;
+	}
+	
+	size_t neighbor_buckets[8];
+	_get_neighboring_buckets(origin, neighbor_buckets);
+
+	const T rsq = radius * radius;
+	for (int i = 0; i < 8; ++i) {
+		size_t bucket_index = neighbor_buckets[i];
+		const std::vector<size_t>& bucket = _buckets[bucket_index];
+		for (size_t point_index : bucket) {
+			const cato::Vec3T<T>& point = _points[point_index];
+			T m_sq = (point - origin).magnitude_squared();
+			if (m_sq <= rsq) {
+				callback(point_index, point);
+			}
+		}
+	}
+}
+
+
+template<typename T>
 size_t PointNeighborLookupHashGrid3<T>::get_hashkey_from_position(const cato::Vec3T<T>& position) const {
 	cato::Vec3i bucketIndex = _get_bucket_index(position);
 	return _get_hashkey_from_bucket_index(bucketIndex);

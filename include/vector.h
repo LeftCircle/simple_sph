@@ -43,6 +43,10 @@ struct Vec3T{
 		return std::sqrt(x * x + y * y + z * z);
 	}
 
+	T magnitude_squared() const {
+		return x * x + y * y + z * z;
+	}
+
 	Vec3T operator+(const Vec3T& v) const {
 		return Vec3T{ x + v.x, y + v.y, z + v.z };
 	}

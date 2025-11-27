@@ -10,17 +10,18 @@
 template<typename T>
 class PointNeighborLookup3 {
 public:
-    using NeighborFunc = std::function<void(size_t, const cato::Vec3T<T>&)>;
+    //using ForEachNeighborFunc = std::function<void(size_t, const cato::Vec3T<T>&)>;
+    typedef std::function<void(size_t, const cato::Vec3T<T>&)> ForEachNeighborFunc;
 
     PointNeighborLookup3() = default;
     virtual ~PointNeighborLookup3() = default;
 
     virtual void build(const std::vector<cato::Vec3T<T>>& points) = 0;
 
-    virtual void forEachNearbyPoint(
+    virtual void for_each_nearby_point(
         const cato::Vec3T<T>& origin,
         T radius,
-        const NeighborFunc& callback) const = 0;
+        const ForEachNeighborFunc& callback) const = 0;
 
 };
 

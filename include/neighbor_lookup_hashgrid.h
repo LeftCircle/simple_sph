@@ -10,6 +10,8 @@
 template<typename T>
 class PointNeighborLookupHashGrid3 final : public PointNeighborLookup3<T> {
 public:
+    using ForEachNeighborFunc = typename PointNeighborLookup3<T>::ForEachNeighborFunc;
+
     PointNeighborLookupHashGrid3(const cato::Vec3i& resolution, double cellSize)
         : _resolution(resolution), _cellSize(cellSize) {}
     PointNeighborLookupHashGrid3(int resolutionX, int resolutionY, int resolutionZ, double cellSize)
@@ -17,10 +19,10 @@ public:
     
     void build(const std::vector<cato::Vec3T<T>>& points) override;
 
-    void forEachNearbyPoint(
+    void for_each_nearby_point(
         const cato::Vec3T<T>& origin,
         T radius,
-        const typename PointNeighborLookup3<T>::NeighborFunc& callback) const override;
+        const ForEachNeighborFunc& callback) const override;
 
     size_t get_hashkey_from_position(const cato::Vec3T<T>& position) const;
 
