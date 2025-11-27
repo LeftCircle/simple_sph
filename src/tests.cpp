@@ -3,8 +3,8 @@
 
 void test_boundary_conditions(){
     // Test that the new position and velocities are not updated if the particle is within bounds
-    std::vector<cato::Vec2> new_positions = { {5.0f, 5.0f}, {15.0f, 15.0f} };
-    std::vector<cato::Vec2> new_velocities = { {1.0f, 1.0f}, {1.0f, 1.0f} };
+    std::vector<cato::Vec2T<float>> new_positions = { {5.0f, 5.0f}, {15.0f, 15.0f} };
+    std::vector<cato::Vec2T<float>> new_velocities = { {1.0f, 1.0f}, {1.0f, 1.0f} };
     const float x_min = 0.0f, x_max = 10.0f;
     const float y_min = 0.0f, y_max = 10.0f;
     const float restitution = 0.5f;

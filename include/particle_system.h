@@ -11,6 +11,7 @@
 #include "vector.h"
 #include "physics_animation.h"
 
+template<typename T>
 class ParticleSystem2D {
 public:
 	ParticleSystem2D();
@@ -19,42 +20,44 @@ public:
 	size_t n_particles() const;
 	void clear_particles();
 	void resize(const size_t n);
-	void randomize_particles(const float x_min, const float x_max,
-		const float y_min, const float y_max);
+	void randomize_particles(const T x_min, const T x_max,
+		const T y_min, const T y_max);
 
-	double radius() const;
-	void set_radius(const double r);
-	void draw_circle(const float x, const float y, const float r) const;
+	T radius() const;
+	void set_radius(const T r);
+	void draw_circle(const T x, const T y, const T r) const;
 
-	double mass() const;
-	void set_mass(const double m);
-	const cato::Vec2& get_position(int particle_n) const { return _positions[particle_n]; };
-	cato::Vec2& get_position(int particle_n) { return _positions[particle_n]; };
+	T mass() const;
+	void set_mass(const T m);
+	const cato::Vec2T<T>& get_position(int particle_n) const { return _positions[particle_n]; };
+	cato::Vec2T<T>& get_position(int particle_n) { return _positions[particle_n]; };
 	
-	const cato::Vec2& get_velocity(int particle_n) const { return _velocities[particle_n]; };
-	cato::Vec2& get_velocity(int particle_n) { return _velocities[particle_n]; };
+	const cato::Vec2T<T>& get_velocity(int particle_n) const { return _velocities[particle_n]; };
+	cato::Vec2T<T>& get_velocity(int particle_n) { return _velocities[particle_n]; };
 	
-	const cato::Vec2& get_force(int particle_n) const { return _forces[particle_n]; };
-	cato::Vec2& get_force(int particle_n) { return _forces[particle_n]; };
+	const cato::Vec2T<T>& get_force(int particle_n) const { return _forces[particle_n]; };
+	cato::Vec2T<T>& get_force(int particle_n) { return _forces[particle_n]; };
 
-	const std::vector<cato::Vec2>& get_positions() const { return _positions; }
-	const std::vector<cato::Vec2>& get_velocities() const { return _velocities; }
-	const std::vector<cato::Vec2>& get_forces() const { return _forces; }
-	std::vector<cato::Vec2>& get_positions() { return _positions; }
-	std::vector<cato::Vec2>& get_velocities() { return _velocities; }
-	std::vector<cato::Vec2>& get_forces() { return _forces; }
+	const std::vector<cato::Vec2T<T>>& get_positions() const { return _positions; }
+	const std::vector<cato::Vec2T<T>>& get_velocities() const { return _velocities; }
+	const std::vector<cato::Vec2T<T>>& get_forces() const { return _forces; }
+	std::vector<cato::Vec2T<T>>& get_positions() { return _positions; }
+	std::vector<cato::Vec2T<T>>& get_velocities() { return _velocities; }
+	std::vector<cato::Vec2T<T>>& get_forces() { return _forces; }
 	
 private:
 	size_t _n_particles;
-	double _radius;
-	double _mass;
+	T _radius;
+	T _mass;
 
 	// Basic vectors containing the x,y positions, velocities, and forces
-	std::vector<cato::Vec2> _positions;
-	std::vector<cato::Vec2> _velocities;
-	std::vector<cato::Vec2> _forces;
+	std::vector<cato::Vec2T<T>> _positions;
+	std::vector<cato::Vec2T<T>> _velocities;
+	std::vector<cato::Vec2T<T>> _forces;
 
 };
-typedef std::shared_ptr<ParticleSystem2D> ParticleSystem2DPtr;
+
+template<typename T>
+using ParticleSystem2DPtr = std::shared_ptr<ParticleSystem2D<T>>;
 
 #endif // PARTICLE_SYSTEM_ANIMATION_H

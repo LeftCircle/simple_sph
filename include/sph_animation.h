@@ -16,8 +16,8 @@ public:
 
 	SPHAnimation(const int num_particles);
 
-	ParticleSystem2DPtr get_particle_system() const { return _particle_system; }
-	ParticleSystem2DPtr get_particle_system() { return _particle_system; }
+	ParticleSystem2DPtr<double> get_particle_system() const { return _particle_system; }
+	ParticleSystem2DPtr<double> get_particle_system() { return _particle_system; }
 	void resize_particle_system(size_t n);
 	void update_graphics() override;
 
@@ -29,7 +29,7 @@ protected:
 	void apply_constraints(const float delta) override;
 
 private:
-	ParticleSystem2DPtr _particle_system;
+	ParticleSystem2DPtr<double> _particle_system;
 
 
 	void _update_to_new_state();

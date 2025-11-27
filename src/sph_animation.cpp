@@ -1,11 +1,11 @@
 #include "sph_animation.h"
 
 SPHAnimation::SPHAnimation() {
-	_particle_system = std::make_shared<ParticleSystem2D>();
+	_particle_system = std::make_shared<ParticleSystem2D<double>>();
 }
 
 SPHAnimation::SPHAnimation(const int num_particles) {
-	_particle_system = std::make_shared<ParticleSystem2D>();
+	_particle_system = std::make_shared<ParticleSystem2D<double>>();
 	resize_particle_system(num_particles);
 }
 
@@ -25,18 +25,18 @@ void SPHAnimation::on_update(const float delta) {
 
 void SPHAnimation::accumulate_forces() {
 	for (size_t i = 0; i < _particle_system->n_particles(); ++i) {
-		cato::Vec2& force = _particle_system->get_force(i);
-		force.x = 0.0f;
-		force.y = -9.81f * _particle_system->mass();
+		cato::Vec2T<double>& force = _particle_system->get_force(i);
+		force.x = 0.0;
+		force.y = -9.81 * _particle_system->mass();
 	}
 }
 
 void SPHAnimation::integrate(const float delta) {
 	// Simple Euler integration
 	for (size_t i = 0; i < _particle_system->n_particles(); i++) {
-		cato::Vec2& velocity = _particle_system->get_velocity(i);
-		cato::Vec2& position = _particle_system->get_position(i);
-		cato::Vec2& force = _particle_system->get_force(i);
+		cato::Vec2T<double>& velocity = _particle_system->get_velocity(i);
+		cato::Vec2T<double>& position = _particle_system->get_position(i);
+		cato::Vec2T<double>& force = _particle_system->get_force(i);
 
 		// position += velocity * delta * 0.5;
 		// velocity += force * delta / _particle_system->mass();
@@ -47,8 +47,8 @@ void SPHAnimation::integrate(const float delta) {
 		position += velocity * delta;
 
 		// Reset force for next accumulation
-		force.x = 0.0f;
-		force.y = 0.0f;
+		force.x = 0.0;
+		force.y = 0.0;
 	}
 }
 
@@ -57,7 +57,7 @@ void SPHAnimation::handle_collisions(const float delta) {
 	CollisionHandler::apply_boundary_collisions(
 		_particle_system->get_positions(),
 		_particle_system->get_velocities(),
-		0.0f, 800.0f, 0.0f, 600.0f, 0.9f
+		0.0, 800.0, 0.0, 600.0, 0.9
 	);
 }
 
@@ -67,7 +67,7 @@ void SPHAnimation::apply_constraints(const float delta) {
 
 void SPHAnimation::update_graphics() {
 	for (size_t i = 0; i < _particle_system->n_particles(); ++i) {
-		cato::Vec2 pos = _particle_system->get_position(i);
+		cato::Vec2T<double> pos = _particle_system->get_position(i);
 		_particle_system->draw_circle(pos.x, pos.y, _particle_system->radius());
 	}
 }

@@ -1,7 +1,7 @@
-#include <functional>
 #ifndef NEIGHBOR_LOOKUP_H
 #define NEIGHBOR_LOOKUP_H
 
+#include <functional>
 #include "vector.h"
 #include <vector>
 // A base interface class for neighbor lookup. Heavily based on Doyub Kim's FLuid engine
@@ -24,6 +24,7 @@ public:
         const ForEachNeighborFunc& callback) const = 0;
 
 };
+
 
 
 #endif

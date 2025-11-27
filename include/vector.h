@@ -5,39 +5,57 @@
 
 namespace cato{
 
-struct Vec2{
-	float x, y;
+template<typename T>
+struct Vec2T{
+	T x, y;
 
-
-	float magnitude() const {
+	Vec2T() : x(0), y(0) {}
+	Vec2T(T x, T y) : x(x), y(y) {};
+	
+	T magnitude() const {
 		return sqrt(x * x + y * y);
 	}
 
-	Vec2 operator+(const Vec2& v) const {
-		return Vec2{ x + v.x, y + v.y };
+	T magnitude_squared() const {
+		return x * x + y * y;
 	}
 
-	Vec2 operator*(float s) const {
-		return Vec2{ x * s, y * s };
+	Vec2T operator+(const Vec2T& v) const {
+		return Vec2T{ x + v.x, y + v.y };
 	}
 
-	Vec2 operator/(float s) const {
-		return Vec2{ x / s, y / s };
-	}
-
-	Vec2 operator+=(const Vec2& v) {
+	Vec2T operator+=(const Vec2T& v) {
 		x += v.x;
 		y += v.y;
 		return *this;
 	}
-};
 
+	Vec2T operator-(const Vec2T& v) const {
+		return Vec2T{ x - v.x, y - v.y };
+	}
+
+	Vec2T operator-=(const Vec2T& v) {
+		x -= v.x;
+		y -= v.y;
+		return *this;
+	}
+
+	Vec2T operator*(T s) const {
+		return Vec2T{ x * s, y * s };
+	}
+
+	Vec2T operator/(T s) const {
+		return Vec2T{ x / s, y / s };
+	}
+
+};
 
 template<typename T>
 struct Vec3T{
 	T x, y, z;
 
 	Vec3T(T x, T y, T z) : x(x), y(y), z(z) {};
+	Vec3T() : x(0), y(0), z(0) {};
 
 	T magnitude() const {
 		return std::sqrt(x * x + y * y + z * z);
@@ -89,6 +107,11 @@ using Vec3f = Vec3T<float>;
 using Vec3d = Vec3T<double>;
 using Vec3i = Vec3T<int>;
 using Vec3s = Vec3T<size_t>;
+
+using Vec2f = Vec2T<float>;
+using Vec2d = Vec2T<double>;
+using Vec2i = Vec2T<int>;
+using Vec2s = Vec2T<size_t>;
 
 }; // Namespace cato
 	
