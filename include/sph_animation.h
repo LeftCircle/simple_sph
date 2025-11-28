@@ -31,7 +31,6 @@ protected:
 private:
 	ParticleSystem2DPtr<double> _particle_system;
 
-
 	void _update_to_new_state();
 
 };

@@ -78,6 +78,30 @@ void ParticleSystem2D<T>::draw_circle(const T x, const T y, const T r) const {
 	glEnd();
 }
 
+template<typename T>
+void ParticleSystem2D<T>::build_neighbor_lookup(int resolution_x, int resolution_y) {
+	_neighbor_lookup = std::make_shared<PointNeighborLookupHashGrid2<T>>(
+		cato::Vec2i{resolution_x, resolution_y}, static_cast<double>(_radius) * 2.0);
+	_neighbor_lookup->build(_positions);
+}
+
+template<typename T>
+void ParticleSystem2D<T>::find_each_neighbor() {
+	_neighbor_indices.resize(_n_particles);
+	for (size_t i = 0; i < _n_particles; ++i) {
+		_neighbor_indices[i].clear();
+		const cato::Vec2T<T>& position = _positions[i];
+		_neighbor_lookup->for_each_nearby_point(
+			position,
+			_radius,
+			[&](size_t neighbor_index, const cato::Vec2T<T>&) {
+				if (neighbor_index != i) {
+					_neighbor_indices[i].push_back(neighbor_index);
+				}
+			}
+		);
+	}
+}
 
 // Explicit template instantiations
 template class ParticleSystem2D<float>;

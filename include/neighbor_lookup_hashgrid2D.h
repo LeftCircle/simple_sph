@@ -5,6 +5,7 @@
 #include "neighbor_lookup2D.h"
 #include <unordered_map>
 #include <vector>
+#include <memory>
 
 
 template<typename T>
@@ -45,6 +46,7 @@ private:
 
 using PointNeighborLookupHashGrid2f = PointNeighborLookupHashGrid2<float>;
 using PointNeighborLookupHashGrid2d = PointNeighborLookupHashGrid2<double>;
-
+using PointNeighborLookup2dptr = std::shared_ptr<PointNeighborLookupHashGrid2<double>>;
+using PointNeighborLookup2fptr = std::shared_ptr<PointNeighborLookupHashGrid2<float>>;
 
 #endif

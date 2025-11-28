@@ -10,6 +10,7 @@
 
 #include "vector.h"
 #include "physics_animation.h"
+#include "neighbor_lookup_hashgrid2D.h"
 
 template<typename T>
 class ParticleSystem2D {
@@ -45,6 +46,11 @@ public:
 	std::vector<cato::Vec2T<T>>& get_velocities() { return _velocities; }
 	std::vector<cato::Vec2T<T>>& get_forces() { return _forces; }
 	
+	// Neighbor lookup structures
+	void build_neighbor_lookup(int resolution_x, int resolution_y);
+	void find_each_neighbor();
+
+	
 private:
 	size_t _n_particles;
 	T _radius;
@@ -54,6 +60,9 @@ private:
 	std::vector<cato::Vec2T<T>> _positions;
 	std::vector<cato::Vec2T<T>> _velocities;
 	std::vector<cato::Vec2T<T>> _forces;
+	// Neighbor lookup structure
+	std::shared_ptr<PointNeighborLookupHashGrid2<T>> _neighbor_lookup;
+	std::vector<std::vector<size_t>> _neighbor_indices;
 
 };
 

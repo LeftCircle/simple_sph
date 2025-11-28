@@ -17,6 +17,10 @@ void SPHAnimation::resize_particle_system(size_t n) {
 }
 
 void SPHAnimation::on_update(const float delta) {
+	// I don't think we are creating the neighbor lookup structure properly. The grid size should
+	// be based on the size of the particles
+	_particle_system->build_neighbor_lookup(50, 50);
+	_particle_system->find_each_neighbor();
 	accumulate_forces();
 	integrate(delta);
 	handle_collisions(delta);

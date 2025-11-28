@@ -35,8 +35,7 @@ void display() {
 
 void idle() {
 	if (advance_sim) {
-		for (int i = 0; i < 10; ++i) // Update multiple times per frame for stability
-			sph_animation->update(0.016f);
+		sph_animation->update(0.016f);
 	}
 
 }
