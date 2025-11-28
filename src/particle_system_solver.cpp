@@ -7,6 +7,11 @@ ParticleSystemSolver2D<T>::ParticleSystemSolver2D() {
 }
 
 template <typename T>
+ParticleSystemSolver2D<T>::ParticleSystemSolver2D(size_t n_particles) {
+    _particle_system = std::make_shared<ParticleSystem2D<T>>(n_particles);
+}
+
+template <typename T>
 ParticleSystemSolver2D<T>::~ParticleSystemSolver2D() {}
 
 template <typename T>

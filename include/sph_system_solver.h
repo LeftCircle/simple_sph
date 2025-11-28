@@ -32,15 +32,22 @@ protected:
 
 	virtual void accumulate_non_pressure_forces(double time_step_sec);
 	virtual void accumulate_pressure_forces(double time_step_sec);
-	virtual void accumulate_pressure_forces(std::vector<cato::Vec2T<T>>& positions,
-		std::vector<T>& densities,
-		std::vector<T>& pressures,
+	virtual void accumulate_pressure_forces(
+		const std::vector<cato::Vec2T<T>>& positions,
+		const std::vector<T>& densities,
+		const std::vector<T>& pressures,
 		std::vector<cato::Vec2T<T>>& forces);
 	void accumulate_viscosity_forces();
 	void compute_psuedo_viscosity();
 
 	void compute_pressure();
-
+	double compute_pressure_from_eos(
+		T density,
+		T target_desnsity,
+		T eos_scale,
+		T eos_exponent,
+		T negative_pressure_scale
+	);
 
 
 };

@@ -42,17 +42,61 @@ void SPHSystemSolver2T<T>::accumulate_pressure_forces(double time_step_sec) {
 }
 
 template <typename T>
-void SPHSystemSolver2T<T>::accumulate_pressure_forces(std::vector<cato::Vec2T<T>>& positions,
-    std::vector<T>& densities,
-    std::vector<T>& pressures,
-    std::vector<cato::Vec2T<T>>& forces) {
+void SPHSystemSolver2T<T>::accumulate_pressure_forces(
+    const std::vector<cato::Vec2T<T>>& positions,
+    const std::vector<T>& densities,
+    const std::vector<T>& pressures,
+    std::vector<cato::Vec2T<T>>& forces
+) {
+    auto particles = sphSystemData();
+    size_t n_particles = particles->n_particles();
+    const T mass_sq = particles->mass() * particles->mass();
+    
+
 
 }
 
 template <typename T>
 void SPHSystemSolver2T<T>::compute_pressure(){
-
+    auto particles = sphSystemData();
+    auto& d = particles->get_densities();
+    auto& p = particles->get_pressures();
+    size_t n_particles = particles->n_particles();
+    T target_density = particles->get_target_density();
+    T eos_scale = static_cast<T>(SPEED_OF_SOUND * SPEED_OF_SOUND * target_density) / this->_eos_exponent;
+    #pragma omp parallel for
+    for (size_t i = 0; i < n_particles; ++i) {
+        p[i] = compute_pressure_from_eos(
+            d[i],
+            target_density,
+            eos_scale,
+            this->_eos_exponent,
+            0
+        );
+    }
 }
+
+template <typename T>
+void SPHSystemSolver2T<T>::on_end_advance_timestep(double time_step_sec) {
+    compute_psuedo_viscosity();
+}
+
+template <typename T>
+double SPHSystemSolver2T<T>::compute_pressure_from_eos(
+    T density,
+    T target_desnsity,
+    T eos_scale,
+    T eos_exponent,
+    T negative_pressure_scale
+) {
+    double pressure = eos_scale / eos_exponent *
+        (std::pow(density / target_desnsity, eos_exponent) - 1.0);
+    if (pressure < 0) {
+        pressure *= negative_pressure_scale;
+    }
+    return pressure;
+}
+
 
 // explicit template instantiation
 template class SPHSystemSolver2T<float>;

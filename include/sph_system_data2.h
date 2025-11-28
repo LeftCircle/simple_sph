@@ -43,8 +43,11 @@ public:
 	// zero. 
 	double laplacian_at(size_t particle_n, const std::vector<cato::Vec2T<T>>& values) const;
 
+	T get_target_density() const { return _target_density; }
+
 private:
 	std::vector<T> _densities;
+	T _target_density = static_cast<T>(1000.0);
 
 };
 
