@@ -51,7 +51,7 @@ public:
 	void find_each_neighbor();
 
 	
-private:
+protected:
 	size_t _n_particles;
 	T _radius;
 	T _mass;

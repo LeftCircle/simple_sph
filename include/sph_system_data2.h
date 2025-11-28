@@ -16,8 +16,18 @@ public:
 	const std::vector<T>& get_densities() const { return _densities; }
 	std::vector<T>& get_densities() { return _densities; }
 
+	// A helper function for udpating densities. Unlike the other interpolation 
+	// functions, the density term cancels out in the SPH summation, so we have
+	// a special helper function for it. That, and density is used to calculate
+	// Every other interpolation, so it should be done first.
+	void update_densities();
+
+	T sum_of_nearby_kernal(const cato::Vec2T<T>& position) const;
+
 	cato::Vec2T<T> interpolate(const cato::Vec2T<T>& position,
 		const std::vector<cato::Vec2T<T>>& values) const;
+
+	
 
 private:
 	std::vector<T> _densities;

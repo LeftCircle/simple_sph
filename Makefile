@@ -1,6 +1,6 @@
 CXX = g++
-CXXFLAGS = -std=c++17 -Wall -Iinclude -g
-LDFLAGS = -lGLEW -lGL -lGLU -lglut
+CXXFLAGS = -std=c++17 -Wall -Iinclude -g -fopenmp
+LDFLAGS = -lGLEW -lGL -lGLU -lglut -fopenmp
 
 SRC = $(wildcard src/*.cpp)
 OBJ = $(SRC:.cpp=.o)
