@@ -15,6 +15,7 @@ template<typename T>
 class ParticleSystem2D {
 public:
 	ParticleSystem2D();
+	ParticleSystem2D(size_t n_particles);
 	~ParticleSystem2D();
 	
 	size_t n_particles() const;

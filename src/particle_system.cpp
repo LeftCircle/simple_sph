@@ -6,6 +6,14 @@ ParticleSystem2D<T>::ParticleSystem2D()
 }
 
 template<typename T>
+ParticleSystem2D<T>::ParticleSystem2D(size_t n_particles)
+	: _n_particles(n_particles), _radius(10.0), _mass(1.0) {
+	_positions.resize(_n_particles, cato::Vec2T<T>{ 0.0, 0.0 });
+	_velocities.resize(_n_particles, cato::Vec2T<T>{ 0.0, 0.0 });
+	_forces.resize(_n_particles, cato::Vec2T<T>{ 0.0, 0.0 });
+}
+
+template<typename T>
 ParticleSystem2D<T>::~ParticleSystem2D() {
 }
 

@@ -8,6 +8,11 @@ SPHSystemData2<T>::SPHSystemData2() : ParticleSystem2D<T>() {
 }
 
 template<typename T>
+SPHSystemData2<T>::SPHSystemData2(size_t n_particles) : ParticleSystem2D<T>(n_particles) {
+    _densities.resize(this->n_particles(), static_cast<T>(0));
+}
+
+template<typename T>
 SPHSystemData2<T>::~SPHSystemData2() {}
 
 template<typename T>
