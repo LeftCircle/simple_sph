@@ -8,14 +8,14 @@ public:
 	PhysicsAnimation();
 	~PhysicsAnimation();
 
-	void update(const float delta);
+	void update(double delta);
 
 protected:
-	virtual void on_update(const float delta) = 0;
+	virtual void on_update(double delta) = 0;
 	virtual void accumulate_forces() = 0;
-	virtual void integrate(const float delta) = 0;
-	virtual void handle_collisions(const float delta) = 0;
-	virtual void apply_constraints(const float delta) = 0;
+	virtual void integrate(double delta) = 0;
+	virtual void handle_collisions(double delta) = 0;
+	virtual void apply_constraints(double delta) = 0;
 	virtual void update_graphics() = 0;
 	
 };

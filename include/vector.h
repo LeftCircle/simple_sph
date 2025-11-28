@@ -11,7 +11,7 @@ struct Vec2T{
 
 	Vec2T() : x(0), y(0) {}
 	Vec2T(T x, T y) : x(x), y(y) {};
-	
+
 	T magnitude() const {
 		return sqrt(x * x + y * y);
 	}
@@ -101,6 +101,17 @@ struct Vec3T{
 
 };
 
+
+template<typename T>
+inline Vec3T<T> operator*(T s, const Vec3T<T>& v) {
+	return Vec3T<T>{ v.x * s, v.y * s, v.z * s };
+}
+
+
+template<typename T>
+inline Vec2T<T> operator*(T s, const Vec2T<T>& v) {
+	return Vec2T<T>{ v.x * s, v.y * s };
+}
 
 // Type alias for common vector types
 using Vec3f = Vec3T<float>;

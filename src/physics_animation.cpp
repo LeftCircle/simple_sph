@@ -6,11 +6,11 @@ PhysicsAnimation::PhysicsAnimation() {
 PhysicsAnimation::~PhysicsAnimation() {
 }
 
-void PhysicsAnimation::update(const float delta) {
+void PhysicsAnimation::update(double delta) {
 	on_update(delta);
 }
 
-void PhysicsAnimation::on_update(const float delta) {
+void PhysicsAnimation::on_update(double delta) {
 	// Default implementation does nothing
 }
 
@@ -18,15 +18,15 @@ void PhysicsAnimation::accumulate_forces() {
 	// Default implementation does nothing
 }
 
-void PhysicsAnimation::integrate(const float delta) {
+void PhysicsAnimation::integrate(double delta) {
 	// Default implementation does nothing
 }
 
-void PhysicsAnimation::handle_collisions(const float delta) {
+void PhysicsAnimation::handle_collisions(double delta) {
 	// Default implementation does nothing
 }
 
-void PhysicsAnimation::apply_constraints(const float delta) {
+void PhysicsAnimation::apply_constraints(double delta) {
 	// Default implementation does nothing
 }
 

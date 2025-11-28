@@ -27,7 +27,14 @@ public:
 	cato::Vec2T<T> interpolate(const cato::Vec2T<T>& position,
 		const std::vector<cato::Vec2T<T>>& values) const;
 
-	
+	// Gradient is slightly different from interpolate, because we need to calculate
+	// symmetric forces on each particle. We are also finding the gradient per particle, 
+	// So we are passing in particle indices instead of positions. 
+	cato::Vec2T<T> gradient_at(size_t particle_n, const std::vector<cato::Vec2T<T>>& values) const;
+
+	// Minor tweak of subtracting value from origin particle results in constant values returning 
+	// zero. 
+	double laplacian_at(size_t particle_n, const std::vector<cato::Vec2T<T>>& values) const;
 
 private:
 	std::vector<T> _densities;

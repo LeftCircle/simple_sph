@@ -9,7 +9,6 @@
 #include <math.h>
 
 #include "vector.h"
-#include "physics_animation.h"
 #include "neighbor_lookup_hashgrid2D.h"
 
 template<typename T>
