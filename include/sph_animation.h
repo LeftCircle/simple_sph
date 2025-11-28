@@ -22,11 +22,11 @@ public:
 	void update_graphics() override;
 
 protected:
-	void on_update(const float delta) override;
+	void on_update(double delta) override;
 	void accumulate_forces() override;
-	void integrate(const float delta) override;
-	void handle_collisions(const float delta) override;
-	void apply_constraints(const float delta) override;
+	void integrate(double delta) override;
+	void handle_collisions(double delta) override;
+	void apply_constraints(double delta) override;
 
 private:
 	ParticleSystem2DPtr<double> _particle_system;
