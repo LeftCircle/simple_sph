@@ -20,7 +20,9 @@ public:
 	
 	size_t n_particles() const;
 	void clear_particles();
-	void resize(const size_t n);
+	// TO DO -> pack all of the appropriate data into one array
+	// so that we don't need a resize function for each inherited class
+	virtual void resize(const size_t n);
 	void randomize_particles(const T x_min, const T x_max,
 		const T y_min, const T y_max);
 

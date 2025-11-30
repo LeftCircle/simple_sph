@@ -8,6 +8,7 @@
 
 #include <memory>
 #include <vector>
+#include <iostream>
 
 #include "sph_kernel.h"
 #include "sph_system_data2.h"
@@ -33,12 +34,13 @@ public:
 
 
 protected:
-	void accumulate_forces(double time_step_sec) override;
+	void on_update(double delta) override;
+	void accumulate_forces() override;
 	void on_begin_advance_timestep(double time_step_sec) override;
 	void on_end_advance_timestep(double time_step_sec) override;
 
-	virtual void accumulate_non_pressure_forces(double time_step_sec);
-	virtual void accumulate_pressure_forces(double time_step_sec);
+	virtual void accumulate_non_pressure_forces();
+	virtual void accumulate_pressure_forces();
 	virtual void accumulate_pressure_forces(
 		const std::vector<cato::Vec2T<T>>& positions,
 		const std::vector<T>& densities,
@@ -62,8 +64,8 @@ protected:
 
 };
 
-using SPHSystemSolver2Td = SPHSystemSolver2T<double>;
-using SPHSystemSolver2Tf = SPHSystemSolver2T<float>;
+using SPHSystemSolver2d = SPHSystemSolver2T<double>;
+using SPHSystemSolver2f = SPHSystemSolver2T<float>;
 
 
 #endif

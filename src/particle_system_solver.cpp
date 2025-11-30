@@ -12,12 +12,22 @@ ParticleSystemSolver2D<T>::ParticleSystemSolver2D(size_t n_particles) {
 }
 
 template <typename T>
+ParticleSystemSolver2D<T>::ParticleSystemSolver2D(const std::shared_ptr<ParticleSystem2D<T>> particle_system) {
+    _particle_system = particle_system;
+}
+
+template <typename T>
+void ParticleSystemSolver2D<T>::set_particle_system(const std::shared_ptr<ParticleSystem2D<T>> particle_system) {
+    _particle_system = particle_system;
+}
+
+template <typename T>
 ParticleSystemSolver2D<T>::~ParticleSystemSolver2D() {}
 
 template <typename T>
 void ParticleSystemSolver2D<T>::on_update(double delta) {
     begin_advance_timestep(delta);
-    accumulate_forces(delta);
+    accumulate_forces();
     integrate(delta);
     handle_collisions(delta);
     end_advance_timestep(delta);
@@ -86,7 +96,12 @@ void ParticleSystemSolver2D<T>::handle_collisions(double time_step_sec) {
 }
 
 template<typename T>
-void ParticleSystemSolver2D<T>::accumulate_forces(double time_step_sec) {
+void ParticleSystemSolver2D<T>::apply_constraints(double time_step_sec) {
+    // Placeholder for constraint application logic
+}
+
+template<typename T>
+void ParticleSystemSolver2D<T>::accumulate_forces() {
     // Simple gravity force accumulation
     size_t n_particles = _particle_system->n_particles();
     auto& forces = _particle_system->get_forces();
@@ -95,6 +110,14 @@ void ParticleSystemSolver2D<T>::accumulate_forces(double time_step_sec) {
 		cato::Vec2T<T>& force = _particle_system->get_force(i);
 		force.x = 0.0;
 		force.y = -9.81 * _particle_system->mass();
+	}
+}
+
+template <typename T>
+void ParticleSystemSolver2D<T>::update_graphics() {
+	for (size_t i = 0; i < _particle_system->n_particles(); ++i) {
+		cato::Vec2T<T> pos = _particle_system->get_position(i);
+		_particle_system->draw_circle(pos.x, pos.y, _particle_system->radius());
 	}
 }
 

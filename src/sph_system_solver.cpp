@@ -1,14 +1,31 @@
 #include "sph_system_solver.h"
 
 template <typename T>
-SPHSystemSolver2T<T>::SPHSystemSolver2T() : ParticleSystemSolver2D<T>() {}
+SPHSystemSolver2T<T>::SPHSystemSolver2T() : ParticleSystemSolver2D<T>() {
+    auto particles = std::make_shared<SPHSystemData2<T>>();
+    this->set_particle_system(particles);
+}
 
 template <typename T>
-SPHSystemSolver2T<T>::SPHSystemSolver2T(size_t n_particles) : ParticleSystemSolver2D<T>(n_particles) {}
+SPHSystemSolver2T<T>::SPHSystemSolver2T(size_t n_particles) : ParticleSystemSolver2D<T>() {
+    auto particles = std::make_shared<SPHSystemData2<T>>(n_particles);
+    this->set_particle_system(particles);
+}
 
 template <typename T>
 SPHSystemSolver2T<T>::~SPHSystemSolver2T() {}
 
+
+template <typename T>
+void SPHSystemSolver2T<T>::on_update(double delta){
+    ParticleSystemSolver2D<T>::on_update(delta);
+    this->update_graphics();
+    // std::cout << "Particle 0 pos = (" 
+    //           << this->_particle_system->get_position(0).x << ", " 
+    //           << this->_particle_system->get_position(0).y << ")\n";
+    std::cout << "Particle 0 density = " 
+              << sphSystemData()->get_densities()[0] << "\n";
+}
 
 template <typename T>
 void SPHSystemSolver2T<T>::on_begin_advance_timestep(double time_step_sec) {
@@ -19,19 +36,19 @@ void SPHSystemSolver2T<T>::on_begin_advance_timestep(double time_step_sec) {
 }
 
 template <typename T>
-void SPHSystemSolver2T<T>::accumulate_forces(double time_step_sec) {
-    accumulate_pressure_forces(time_step_sec);
-    accumulate_non_pressure_forces(time_step_sec);
+void SPHSystemSolver2T<T>::accumulate_forces() {
+    //accumulate_pressure_forces();
+    accumulate_non_pressure_forces();
 }
 
 template <typename T>
-void SPHSystemSolver2T<T>::accumulate_non_pressure_forces(double time_step_sec) {
-    ParticleSystemSolver2D<T>::accumulate_forces(time_step_sec);
-    accumulate_viscosity_forces();
+void SPHSystemSolver2T<T>::accumulate_non_pressure_forces() {
+    ParticleSystemSolver2D<T>::accumulate_forces();
+    //accumulate_viscosity_forces();
 }
 
 template <typename T>
-void SPHSystemSolver2T<T>::accumulate_pressure_forces(double time_step_sec) {
+void SPHSystemSolver2T<T>::accumulate_pressure_forces() {
     auto particles = sphSystemData();
     auto& x = particles->get_positions();
     auto& d = particles->get_densities();
@@ -115,7 +132,7 @@ void SPHSystemSolver2T<T>::compute_pressure(){
 
 template <typename T>
 void SPHSystemSolver2T<T>::on_end_advance_timestep(double time_step_sec) {
-    compute_psuedo_viscosity(time_step_sec);
+    //compute_psuedo_viscosity(time_step_sec);
 }
 
 template <typename T>

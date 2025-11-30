@@ -4,11 +4,13 @@
 #include "sph_animation.h"
 #include "command_line_parser.h"
 #include "tests.h"
+#include "sph_system_solver.h"
 
 const int WINDOW_WIDTH = 800;
 const int WINDOW_HEIGHT = 600;
 
-SPHAnimationPtr sph_animation;
+//SPHAnimationPtr sph_animation;
+SPHSystemSolver2d sph_animation(500);
 
 bool advance_sim = true;
 
@@ -27,7 +29,7 @@ void keyboard(unsigned char key, int x, int y) {
 void display() {
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	sph_animation->update_graphics();
+	//sph_animation.update_graphics();
 	glutSwapBuffers();
 	glutPostRedisplay();
 
@@ -35,7 +37,7 @@ void display() {
 
 void idle() {
 	if (advance_sim) {
-		sph_animation->update(0.016f);
+		sph_animation.update(0.016f);
 	}
 
 }
@@ -84,9 +86,9 @@ int main(int argc, char** argv) {
 
 	glewInit();
 
-	sph_animation = std::make_shared<SPHAnimation>();
-	sph_animation->get_particle_system()->resize(num_particles);
-	sph_animation->get_particle_system()->randomize_particles(0.0f, 800.0f, 0.0f, 600.0f);
+	//sph_animation = std::make_shared<SPHAnimation>();
+	sph_animation.sphSystemData()->resize(num_particles);
+	sph_animation.sphSystemData()->randomize_particles(0.0f, 800.0f, 0.0f, 600.0f);
 
 	glutReshapeFunc(doReshape);
 	glutKeyboardFunc(keyboard);
@@ -95,7 +97,7 @@ int main(int argc, char** argv) {
 	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 	glutMainLoop();
 
-	sph_animation.reset();
+	//sph_animation.reset();
 	return 0;
 
 }

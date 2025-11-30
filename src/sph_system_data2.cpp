@@ -15,6 +15,14 @@ SPHSystemData2<T>::SPHSystemData2(size_t n_particles) : ParticleSystem2D<T>(n_pa
 template<typename T>
 SPHSystemData2<T>::~SPHSystemData2() {}
 
+
+template<typename T>
+void SPHSystemData2<T>::resize(const size_t n) {
+    ParticleSystem2D<T>::resize(n);
+    _densities.resize(this->n_particles(), static_cast<T>(0));
+    _pressures.resize(this->n_particles(), static_cast<T>(0));
+}
+
 template<typename T>
 void SPHSystemData2<T>::update_densities() {
     // This will update densities for all particles
@@ -23,7 +31,7 @@ void SPHSystemData2<T>::update_densities() {
     SphSpikyKernal2<T> kernel(this->radius());
     size_t n_particles = this->n_particles();
     #pragma omp parallel for
-    for (size_t i = 0; i < n_particles; ++i) {
+    for (size_t i = 0; i < n_particles; i++) {
         T density = static_cast<T>(0);
         this->_neighbor_lookup->for_each_nearby_point(
             p[i],
@@ -33,6 +41,8 @@ void SPHSystemData2<T>::update_densities() {
                 density += this->_mass * kernel(distance);
             }
         );
+        // add our own particle contribution
+        density += this->_mass * kernel(0);
         d[i] = density;
     }
 }

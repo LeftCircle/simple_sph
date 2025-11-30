@@ -20,6 +20,8 @@ public:
 	SPHSystemData2(size_t n_particles);
 	~SPHSystemData2();
 
+	void resize(const size_t n) override;
+
 	const std::vector<T>& get_densities() const { return _densities; }
 	std::vector<T>& get_densities() { return _densities; }
 
