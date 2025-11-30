@@ -20,6 +20,10 @@ struct Vec2T{
 		return x * x + y * y;
 	}
 
+	T distance_to(const Vec2T& v) const {
+		return (*this - v).magnitude();
+	}
+
 	Vec2T operator+(const Vec2T& v) const {
 		return Vec2T{ x + v.x, y + v.y };
 	}
@@ -40,12 +44,21 @@ struct Vec2T{
 		return *this;
 	}
 
-	Vec2T operator*(T s) const {
-		return Vec2T{ x * s, y * s };
+	template<typename U>
+	Vec2T operator*(U s) const {
+		return Vec2T{ static_cast<T>(x * s), static_cast<T>(y * s) };
 	}
 
-	Vec2T operator/(T s) const {
-		return Vec2T{ x / s, y / s };
+	template<typename U>
+	Vec2T operator/(U s) const {
+		return Vec2T{ static_cast<T>(x / s), static_cast<T>(y / s) };
+	}
+
+	template<typename U>
+	Vec2T& operator/=(U s) {
+		x = static_cast<T>(x / s);
+		y = static_cast<T>(y / s);
+		return *this;
 	}
 
 };
@@ -63,6 +76,10 @@ struct Vec3T{
 
 	T magnitude_squared() const {
 		return x * x + y * y + z * z;
+	}
+
+	T distance_to(const Vec3T& v) const {
+		return (*this - v).magnitude();
 	}
 
 	Vec3T operator+(const Vec3T& v) const {
@@ -91,26 +108,29 @@ struct Vec3T{
 		return Vec3T{ -x, -y, -z };
 	}
 
-	Vec3T operator*(T s) const {
-		return Vec3T{ x * s, y * s, z * s };
+	
+	template<typename U>
+	Vec3T operator*(U s) const {
+		return Vec3T{ static_cast<T>(x * s), static_cast<T>(y * s), static_cast<T>(z * s) };
 	}
 
-	Vec3T operator/(T s) const {
-		return Vec3T{ x / s, y / s, z / s };
+	template<typename U>
+	Vec3T operator/(U s) const {
+		return Vec3T{ static_cast<T>(x / s), static_cast<T>(y / s), static_cast<T>(z / s) };
 	}
 
 };
 
 
-template<typename T>
-inline Vec3T<T> operator*(T s, const Vec3T<T>& v) {
-	return Vec3T<T>{ v.x * s, v.y * s, v.z * s };
+template<typename T, typename U>
+inline Vec3T<T> operator*(U s, const Vec3T<T>& v) {
+	return Vec3T<T>{ static_cast<T>(v.x * s), static_cast<T>(v.y * s), static_cast<T>(v.z * s) };
 }
 
 
-template<typename T>
-inline Vec2T<T> operator*(T s, const Vec2T<T>& v) {
-	return Vec2T<T>{ v.x * s, v.y * s };
+template<typename T, typename U>
+inline Vec2T<T> operator*(U s, const Vec2T<T>& v) {
+	return Vec2T<T>{ static_cast<T>(v.x * s), static_cast<T>(v.y * s) };
 }
 
 // Type alias for common vector types

@@ -70,7 +70,7 @@ void ParticleSystemSolver2D<T>::integrate(double time_step_sec) {
         new_vel = velocities[i] + time_step_sec * forces[i] / mass;
 
         auto& new_pos = _new_positions[i];
-        new_pos = positions[i] + time_step_sec * new_vel;
+        new_pos = (positions[i] + time_step_sec * new_vel);
 
     }
 }
@@ -85,6 +85,18 @@ void ParticleSystemSolver2D<T>::handle_collisions(double time_step_sec) {
 	);
 }
 
+template<typename T>
+void ParticleSystemSolver2D<T>::accumulate_forces(double time_step_sec) {
+    // Simple gravity force accumulation
+    size_t n_particles = _particle_system->n_particles();
+    auto& forces = _particle_system->get_forces();
+    #pragma omp parallel for
+	for (size_t i = 0; i < n_particles; i++) {
+		cato::Vec2T<T>& force = _particle_system->get_force(i);
+		force.x = 0.0;
+		force.y = -9.81 * _particle_system->mass();
+	}
+}
 
 // explicit type instantiation
 template class ParticleSystemSolver2D<double>;

@@ -23,6 +23,9 @@ public:
 	const std::vector<T>& get_densities() const { return _densities; }
 	std::vector<T>& get_densities() { return _densities; }
 
+	const std::vector<T>& get_pressures() const { return _pressures; }
+	std::vector<T>& get_pressures() { return _pressures; }
+
 	// A helper function for udpating densities. Unlike the other interpolation 
 	// functions, the density term cancels out in the SPH summation, so we have
 	// a special helper function for it. That, and density is used to calculate
@@ -37,16 +40,18 @@ public:
 	// Gradient is slightly different from interpolate, because we need to calculate
 	// symmetric forces on each particle. We are also finding the gradient per particle, 
 	// So we are passing in particle indices instead of positions. 
-	cato::Vec2T<T> gradient_at(size_t particle_n, const std::vector<cato::Vec2T<T>>& values) const;
+	cato::Vec2T<T> gradient_at(size_t particle_n, const std::vector<T>& values) const;
 
 	// Minor tweak of subtracting value from origin particle results in constant values returning 
 	// zero. 
-	double laplacian_at(size_t particle_n, const std::vector<cato::Vec2T<T>>& values) const;
-
+	T laplacian_at(size_t particle_n, const std::vector<T>& values) const;
+	
 	T get_target_density() const { return _target_density; }
 
 private:
 	std::vector<T> _densities;
+	std::vector<T> _pressures;
+
 	T _target_density = static_cast<T>(1000.0);
 
 };

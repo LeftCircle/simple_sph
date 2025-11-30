@@ -8,9 +8,6 @@
 #include "physics_animation.h"
 #include "collisions.h"
 
-const double SPEED_OF_SOUND = 1481.0; // Speed of sound in water in m/s
-
-// TODO -> move the drawing logic from the particle system data to here
 template <typename T>
 class ParticleSystemSolver2D : public PhysicsAnimation {
 
@@ -27,18 +24,16 @@ protected:
     virtual void accumulate_forces(double time_step_sec);
     virtual void on_begin_advance_timestep(double time_step_sec) {}
     virtual void on_end_advance_timestep(double time_step_sec) {}
+    std::shared_ptr<ParticleSystem2D<T>> _particle_system;
 
 private:
     void begin_advance_timestep(double time_step_sec);
     void end_advance_timestep(double time_step_sec);
     void integrate(double time_step_sec) override;
     
-    std::shared_ptr<ParticleSystem2D<T>> _particle_system;
     
     std::vector<cato::Vec2T<T>> _new_positions;
-    std::vector<cato::Vec2T<T>> _new_velocities;
-    T _eos_exponent = static_cast<T>(7.0);
-    
+    std::vector<cato::Vec2T<T>> _new_velocities;    
 };
 
 

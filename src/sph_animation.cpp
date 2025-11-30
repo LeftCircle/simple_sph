@@ -16,7 +16,7 @@ void SPHAnimation::resize_particle_system(size_t n) {
 	_particle_system->resize(n);
 }
 
-void SPHAnimation::on_update(const float delta) {
+void SPHAnimation::on_update(double delta) {
 	// I don't think we are creating the neighbor lookup structure properly. The grid size should
 	// be based on the size of the particles
 	_particle_system->build_neighbor_lookup(50, 50);
@@ -35,7 +35,7 @@ void SPHAnimation::accumulate_forces() {
 	}
 }
 
-void SPHAnimation::integrate(const float delta) {
+void SPHAnimation::integrate(double delta) {
 	// Simple Euler integration
 	for (size_t i = 0; i < _particle_system->n_particles(); i++) {
 		cato::Vec2T<double>& velocity = _particle_system->get_velocity(i);
@@ -56,7 +56,7 @@ void SPHAnimation::integrate(const float delta) {
 	}
 }
 
-void SPHAnimation::handle_collisions(const float delta) {
+void SPHAnimation::handle_collisions(double delta) {
 	// Placeholder for collision handling logic
 	CollisionHandler::apply_boundary_collisions(
 		_particle_system->get_positions(),
@@ -65,7 +65,7 @@ void SPHAnimation::handle_collisions(const float delta) {
 	);
 }
 
-void SPHAnimation::apply_constraints(const float delta) {
+void SPHAnimation::apply_constraints(double delta) {
 	// Placeholder for constraint application logic
 }
 

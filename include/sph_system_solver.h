@@ -9,12 +9,16 @@
 #include <memory>
 #include <vector>
 
-#include "particle_system.h"
+#include "sph_kernel.h"
+#include "sph_system_data2.h"
 #include "vector.h"
+#include "particle_system_solver.h"
+
+const double SPEED_OF_SOUND = 1481.0; // Speed of sound in water in m/s
+
 
 template <typename T>
 class SPHSystemSolver2T : public ParticleSystemSolver2D<T> {
-
 public:
 	SPHSystemSolver2T();
 	SPHSystemSolver2T(size_t n_particles);
@@ -23,6 +27,9 @@ public:
 	std::shared_ptr<SPHSystemData2<T>> sphSystemData() {
 		return std::static_pointer_cast<SPHSystemData2<T>>(this->_particle_system);
 	}
+
+	T get_viscosity_coefficient() const { return _viscosity_coefficient; }
+	void set_viscosity_coefficient(T v) { _viscosity_coefficient = v; }
 
 
 protected:
@@ -38,7 +45,7 @@ protected:
 		const std::vector<T>& pressures,
 		std::vector<cato::Vec2T<T>>& forces);
 	void accumulate_viscosity_forces();
-	void compute_psuedo_viscosity();
+	void compute_psuedo_viscosity(double time_step_sec);
 
 	void compute_pressure();
 	double compute_pressure_from_eos(
@@ -49,6 +56,9 @@ protected:
 		T negative_pressure_scale
 	);
 
+	T _viscosity_coefficient = static_cast<T>(0.1);
+	T _eos_exponent = static_cast<T>(7.0);
+	T _pseudoViscosityCoefficient = static_cast<T>(10.0);
 
 };
 

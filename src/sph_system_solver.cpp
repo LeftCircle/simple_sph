@@ -51,9 +51,46 @@ void SPHSystemSolver2T<T>::accumulate_pressure_forces(
     auto particles = sphSystemData();
     size_t n_particles = particles->n_particles();
     const T mass_sq = particles->mass() * particles->mass();
-    
+    const SphSpikyKernal2<T> kernel(particles->radius());
 
+    #pragma omp parallel for
+    for (size_t i = 0; i < n_particles; ++i) {
+        const auto& neighbors = particles->get_neighbors(i);
+        for (size_t j : neighbors) {
+            cato::Vec2T<T> rij = positions[i] - positions[j];
+            T dist = rij.magnitude();
+            if (dist > 0) {
+                cato::Vec2T<T> dir = rij / dist;                
+                T pressure_term = (pressures[i] / (densities[i] * densities[i]) +
+                                   pressures[j] / (densities[j] * densities[j]));
+                cato::Vec2T<T> pressure_force = -mass_sq * pressure_term * kernel.gradient(dist, dir);
+                forces[i] += pressure_force;
+            }
+        }
+    }
+}
 
+template <typename T>
+void SPHSystemSolver2T<T>::accumulate_viscosity_forces() {
+    auto particles = sphSystemData();
+    auto& x = particles->get_positions();
+    auto& v = particles->get_velocities();
+    auto& d = particles->get_densities();
+    auto& f = particles->get_forces();
+
+    const auto mass_sq = particles->mass() * particles->mass();
+    const SphStdKernal2<T> kernel(particles->radius());
+    size_t n_particles = particles->n_particles();
+
+    #pragma omp parallel for
+    for (size_t i = 0; i < n_particles; ++i) {
+        const auto& neighbors = particles->get_neighbors(i);
+        for (size_t j : neighbors) {
+            auto dist = x[i].distance_to(x[j]);
+            f[i] += get_viscosity_coefficient() * mass_sq *
+                (v[j] - v[i]) / d[j] * kernel.second_derivative(dist); 
+        }
+    }
 }
 
 template <typename T>
@@ -78,7 +115,56 @@ void SPHSystemSolver2T<T>::compute_pressure(){
 
 template <typename T>
 void SPHSystemSolver2T<T>::on_end_advance_timestep(double time_step_sec) {
-    compute_psuedo_viscosity();
+    compute_psuedo_viscosity(time_step_sec);
+}
+
+template <typename T>
+void SPHSystemSolver2T<T>::compute_psuedo_viscosity(double time_step_sec) {
+    auto particles = sphSystemData();
+    size_t numberOfParticles = particles->n_particles();
+    auto x = particles->get_positions();
+    auto v = particles->get_velocities();
+    auto d = particles->get_densities();
+
+    const T mass = particles->mass();
+    const SphSpikyKernal2<T> kernel(particles->radius());
+
+    std::vector<cato::Vec2T<T>> smoothedVelocities(numberOfParticles);
+
+    // TODO -> move to it's own function for building smoothed velocities
+    #pragma omp parallel for
+    for (size_t i = 0; i < numberOfParticles; ++i) {
+        T weightSum = 0.0;
+        cato::Vec2T<T> smoothedVelocity(0, 0);
+
+        const auto& neighbors = particles->get_neighbors(i);
+        for (size_t j : neighbors) {
+            T dist = x[i].distance_to(x[j]);
+            T wj = mass / d[j] * kernel(dist);
+            weightSum += wj;
+            smoothedVelocity += v[j] * wj;
+        }
+        T wi = mass / d[i];
+        weightSum += wi;
+        smoothedVelocity += v[i] * wi;
+
+        if (weightSum > 0.0) {
+            smoothedVelocity /= weightSum;
+        }
+
+        smoothedVelocities[i] = smoothedVelocity;
+    }
+
+    double factor = time_step_sec * _pseudoViscosityCoefficient;
+    factor = std::clamp(factor, 0.0, 1.0);
+
+    #pragma omp parallel for
+    for (size_t i = 0; i < numberOfParticles; ++i) {
+        cato::Vec2T<T>& velocity = particles->get_velocity(i);
+        const cato::Vec2T<T>& smoothed = smoothedVelocities[i];
+        //velocity = lerp(velocity, smoothed, static_cast<T>(factor));
+        velocity += (smoothed - velocity) * static_cast<T>(factor);
+    }
 }
 
 template <typename T>
@@ -89,7 +175,7 @@ double SPHSystemSolver2T<T>::compute_pressure_from_eos(
     T eos_exponent,
     T negative_pressure_scale
 ) {
-    double pressure = eos_scale / eos_exponent *
+    T pressure = eos_scale / eos_exponent *
         (std::pow(density / target_desnsity, eos_exponent) - 1.0);
     if (pressure < 0) {
         pressure *= negative_pressure_scale;
