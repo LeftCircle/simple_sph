@@ -10,7 +10,7 @@ const int WINDOW_WIDTH = 800;
 const int WINDOW_HEIGHT = 600;
 
 //SPHAnimationPtr sph_animation;
-SPHSystemSolver2d sph_animation(500);
+SPHSystemSolver2d sph_animation(2);
 
 bool advance_sim = true;
 
