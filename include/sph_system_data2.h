@@ -2,6 +2,7 @@
 #define SPH_SYSTEM_DATA2_H
 
 #include <vector>
+#include <iostream>
 
 #include "particle_system.h"
 #include "vector.h"

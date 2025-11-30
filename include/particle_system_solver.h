@@ -16,6 +16,12 @@ public:
     ParticleSystemSolver2D(size_t n_particles);
     virtual ~ParticleSystemSolver2D();
     
+    std::shared_ptr<ParticleSystem2D<T>> particleSystem() {
+        return _particle_system;
+    }
+    void update_graphics() override;
+
+    
 protected:
    	// Protected constructor for derived classes to set the particle type
     ParticleSystemSolver2D(const std::shared_ptr<ParticleSystem2D<T>> particle_system);
@@ -25,7 +31,6 @@ protected:
 
     void handle_collisions(double time_step_sec) override;
     void apply_constraints(double time_step_sec) override;
-    void update_graphics() override;
     
     virtual void accumulate_forces();
     virtual void on_begin_advance_timestep(double time_step_sec) {}

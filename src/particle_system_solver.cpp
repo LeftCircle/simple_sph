@@ -89,8 +89,8 @@ template<typename T>
 void ParticleSystemSolver2D<T>::handle_collisions(double time_step_sec) {
 	// Placeholder for collision handling logic
 	CollisionHandler::apply_boundary_collisions(
-		_particle_system->get_positions(),
-		_particle_system->get_velocities(),
+		_new_positions,
+		_new_velocities,
 		0.0, 800.0, 0.0, 600.0, 0.9
 	);
 }
@@ -117,7 +117,7 @@ template <typename T>
 void ParticleSystemSolver2D<T>::update_graphics() {
 	for (size_t i = 0; i < _particle_system->n_particles(); ++i) {
 		cato::Vec2T<T> pos = _particle_system->get_position(i);
-		_particle_system->draw_circle(pos.x, pos.y, _particle_system->radius());
+		_particle_system->draw_circle(pos.x, pos.y, _particle_system->radius() / static_cast<T>(10));
 	}
 }
 

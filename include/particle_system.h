@@ -35,6 +35,10 @@ public:
 	const cato::Vec2T<T>& get_position(int particle_n) const { return _positions[particle_n]; };
 	cato::Vec2T<T>& get_position(int particle_n) { return _positions[particle_n]; };
 	
+	void set_particle_position(int particle_n, const cato::Vec2T<T>& position) {
+		_positions[particle_n] = position;
+	}
+	
 	const cato::Vec2T<T>& get_velocity(int particle_n) const { return _velocities[particle_n]; };
 	cato::Vec2T<T>& get_velocity(int particle_n) { return _velocities[particle_n]; };
 	
@@ -55,14 +59,14 @@ public:
 	}
 
 	// Neighbor lookup structures
-	void build_neighbor_lookup(int resolution_x, int resolution_y);
+	void build_neighbor_lookup(int resolution_x, int resolution_y, double cell_size);
 	void find_each_neighbor();
 
 	
 protected:
 	size_t _n_particles;
-	T _radius;
-	T _mass;
+	T _radius = static_cast<T>(300);
+	T _mass = static_cast<T>(1);
 
 	// Basic vectors containing the x,y positions, velocities, and forces
 	std::vector<cato::Vec2T<T>> _positions;

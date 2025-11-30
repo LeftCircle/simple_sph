@@ -4,6 +4,7 @@
 #include "sph_animation.h"
 #include "command_line_parser.h"
 #include "tests.h"
+#include "particle_system_solver.h"
 #include "sph_system_solver.h"
 
 const int WINDOW_WIDTH = 800;
@@ -11,6 +12,7 @@ const int WINDOW_HEIGHT = 600;
 
 //SPHAnimationPtr sph_animation;
 SPHSystemSolver2d sph_animation(2);
+//ParticleSystemSolver2Dd particle_system_solver(2);
 
 bool advance_sim = true;
 
@@ -29,7 +31,8 @@ void keyboard(unsigned char key, int x, int y) {
 void display() {
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	//sph_animation.update_graphics();
+	sph_animation.update_graphics();
+	//particle_system_solver.update_graphics();
 	glutSwapBuffers();
 	glutPostRedisplay();
 
@@ -38,6 +41,7 @@ void display() {
 void idle() {
 	if (advance_sim) {
 		sph_animation.update(0.016f);
+		//particle_system_solver.update(0.016);
 	}
 
 }
@@ -85,10 +89,14 @@ int main(int argc, char** argv) {
 	glutCreateWindow("SPH Simulation");
 
 	glewInit();
-
-	//sph_animation = std::make_shared<SPHAnimation>();
+	
+	sph_animation.sphSystemData()->set_radius(300.0);
 	sph_animation.sphSystemData()->resize(num_particles);
-	sph_animation.sphSystemData()->randomize_particles(0.0f, 800.0f, 0.0f, 600.0f);
+	//sph_animation.sphSystemData()->randomize_particles(0.0f, 800.0f, 0.0f, 600.0f);
+	sph_animation.sphSystemData()->set_particle_position(0, cato::Vec2d(310.0, 400.0));
+	sph_animation.sphSystemData()->set_particle_position(1, cato::Vec2d(290.0, 400.0));
+	// particle_system_solver.particleSystem()->resize(num_particles);
+	// particle_system_solver.particleSystem()->randomize_particles(0.0, 800.0, 0.0, 600.0);
 
 	glutReshapeFunc(doReshape);
 	glutKeyboardFunc(keyboard);

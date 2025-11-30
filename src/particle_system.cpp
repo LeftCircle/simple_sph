@@ -87,9 +87,10 @@ void ParticleSystem2D<T>::draw_circle(const T x, const T y, const T r) const {
 }
 
 template<typename T>
-void ParticleSystem2D<T>::build_neighbor_lookup(int resolution_x, int resolution_y) {
+void ParticleSystem2D<T>::build_neighbor_lookup(int resolution_x, int resolution_y, double cell_size) {
 	_neighbor_lookup = std::make_shared<PointNeighborLookupHashGrid2<T>>(
-		cato::Vec2i{resolution_x, resolution_y}, static_cast<double>(_radius) * 2.0);
+		cato::Vec2i{resolution_x, resolution_y}, cell_size);
+	
 	_neighbor_lookup->build(_positions);
 }
 

@@ -19,32 +19,41 @@ SPHSystemSolver2T<T>::~SPHSystemSolver2T() {}
 template <typename T>
 void SPHSystemSolver2T<T>::on_update(double delta){
     ParticleSystemSolver2D<T>::on_update(delta);
-    this->update_graphics();
     // std::cout << "Particle 0 pos = (" 
     //           << this->_particle_system->get_position(0).x << ", " 
     //           << this->_particle_system->get_position(0).y << ")\n";
-    std::cout << "Particle 0 density = " 
-              << sphSystemData()->get_densities()[0] << "\n";
 }
 
 template <typename T>
 void SPHSystemSolver2T<T>::on_begin_advance_timestep(double time_step_sec) {
     auto particles = sphSystemData();
-    particles->build_neighbor_lookup(50, 50);
+    const double cell_size = particles->radius() * 2.0;
+    const int resolution_x = static_cast<int>(800.0 / cell_size) + 1;
+    const int resolution_y = static_cast<int>(600.0 / cell_size) + 1;
+    particles->build_neighbor_lookup(resolution_x, resolution_y, cell_size);
     particles->find_each_neighbor();
+    // Let's print out the particle neighbor list
+    // for (size_t i = 0; i < particles->n_particles(); ++i) {
+    //     const auto& neighbors = particles->get_neighbors(i);
+    //     std::cout << "Particle " << i << " has " << neighbors.size() << " neighbors: ";
+    //     for (size_t j : neighbors) {
+    //         std::cout << j << " ";
+    //     }
+    //     std::cout << "\n";
+    // }
     particles->update_densities();
 }
 
 template <typename T>
 void SPHSystemSolver2T<T>::accumulate_forces() {
-    //accumulate_pressure_forces();
+    accumulate_pressure_forces();
     accumulate_non_pressure_forces();
 }
 
 template <typename T>
 void SPHSystemSolver2T<T>::accumulate_non_pressure_forces() {
     ParticleSystemSolver2D<T>::accumulate_forces();
-    //accumulate_viscosity_forces();
+    accumulate_viscosity_forces();
 }
 
 template <typename T>
@@ -132,16 +141,16 @@ void SPHSystemSolver2T<T>::compute_pressure(){
 
 template <typename T>
 void SPHSystemSolver2T<T>::on_end_advance_timestep(double time_step_sec) {
-    //compute_psuedo_viscosity(time_step_sec);
+    compute_psuedo_viscosity(time_step_sec);
 }
 
 template <typename T>
 void SPHSystemSolver2T<T>::compute_psuedo_viscosity(double time_step_sec) {
     auto particles = sphSystemData();
     size_t numberOfParticles = particles->n_particles();
-    auto x = particles->get_positions();
-    auto v = particles->get_velocities();
-    auto d = particles->get_densities();
+    auto& x = particles->get_positions();
+    auto& v = particles->get_velocities();
+    auto& d = particles->get_densities();
 
     const T mass = particles->mass();
     const SphSpikyKernal2<T> kernel(particles->radius());

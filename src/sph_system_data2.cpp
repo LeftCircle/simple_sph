@@ -26,8 +26,8 @@ void SPHSystemData2<T>::resize(const size_t n) {
 template<typename T>
 void SPHSystemData2<T>::update_densities() {
     // This will update densities for all particles
-    auto d = this->get_densities();
-    auto p = this->get_positions();
+    auto& d = this->get_densities();
+    auto& p = this->get_positions();
     SphSpikyKernal2<T> kernel(this->radius());
     size_t n_particles = this->n_particles();
     #pragma omp parallel for
@@ -41,8 +41,6 @@ void SPHSystemData2<T>::update_densities() {
                 density += this->_mass * kernel(distance);
             }
         );
-        // add our own particle contribution
-        density += this->_mass * kernel(0);
         d[i] = density;
     }
 }
@@ -67,7 +65,7 @@ cato::Vec2T<T> SPHSystemData2<T>::interpolate(const cato::Vec2T<T>& position,
     const std::vector<cato::Vec2T<T>>& values) const {
     
     cato::Vec2T<T> result{ 0, 0 };
-    auto d = this->get_densities();
+    auto& d = this->get_densities();
     SphSpikyKernal2<T> kernel(this->radius());
     this->_neighbor_lookup->for_each_nearby_point(
         position,
@@ -88,8 +86,8 @@ cato::Vec2T<T> SPHSystemData2<T>::gradient_at(size_t particle_n,
     const std::vector<T>& values) const {
 
     cato::Vec2T<T> result(0, 0);
-    auto d = this->get_densities();
-    auto p = this->get_positions();
+    auto& d = this->get_densities();
+    auto& p = this->get_positions();
     auto origin = p[particle_n];
     SphSpikyKernal2<T> kernel(this->_radius);
     const auto& neighbors = this->_neighbor_indices[particle_n];
@@ -115,8 +113,8 @@ T SPHSystemData2<T>::laplacian_at(size_t particle_n,
     const std::vector<T>& values) const {
     
     T result = 0.0;
-    auto d = this->get_densities();
-    auto p = this->get_positions();
+    auto& d = this->get_densities();
+    auto& p = this->get_positions();
     auto origin = p[particle_n];
     SphStdKernal2<T> kernel(this->_radius);
     const auto& neighbors = this->_neighbor_indices[particle_n];
