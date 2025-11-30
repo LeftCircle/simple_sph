@@ -47,6 +47,11 @@ void SPHSystemSolver2T<T>::on_begin_advance_timestep(double time_step_sec) {
 template <typename T>
 void SPHSystemSolver2T<T>::accumulate_forces() {
     accumulate_pressure_forces();
+    // Print out the pressure forces for debugging
+    //auto&p = sphSystemData()->get_pressures();
+    // for (size_t i = 0; i < p.size(); ++i) {
+    //     std::cout << "Particle " << i << " pressure = " << p[i] << "\n";
+    // }
     accumulate_non_pressure_forces();
 }
 
@@ -93,7 +98,7 @@ void SPHSystemSolver2T<T>::accumulate_pressure_forces(
                 forces[i] += pressure_force;
             }
         }
-    }
+    }  
 }
 
 template <typename T>
@@ -136,6 +141,10 @@ void SPHSystemSolver2T<T>::compute_pressure(){
             this->_eos_exponent,
             0
         );
+        if (i == 0){
+            std::cout << "Particle " << i << " density = " << d[i]
+                      << ", pressure = " << p[i] << "\n";
+        }
     }
 }
 
@@ -202,7 +211,7 @@ double SPHSystemSolver2T<T>::compute_pressure_from_eos(
     T negative_pressure_scale
 ) {
     T pressure = eos_scale / eos_exponent *
-        (std::pow(density / target_desnsity, eos_exponent) - 1.0);
+        (std::pow((density / target_desnsity) - 1.0, eos_exponent));
     if (pressure < 0) {
         pressure *= negative_pressure_scale;
     }

@@ -33,14 +33,21 @@ void SPHSystemData2<T>::update_densities() {
     #pragma omp parallel for
     for (size_t i = 0; i < n_particles; i++) {
         T density = static_cast<T>(0);
-        this->_neighbor_lookup->for_each_nearby_point(
-            p[i],
-            this->_radius,
-            [&](size_t j, const cato::Vec2T<T>& neighborPosition) {
-                T distance = (p[i] - neighborPosition).magnitude();
-                density += this->_mass * kernel(distance);
-            }
-        );
+        // this->_neighbor_lookup->for_each_nearby_point(
+        //     p[i],
+        //     this->_radius,
+        //     [&](size_t j, const cato::Vec2T<T>& neighborPosition) {
+        //         T distance = (p[i] - neighborPosition).magnitude();
+        //         density += this->_mass * kernel(distance);
+        //     }
+        // );
+        const auto& neighbors = this->_neighbor_indices[i];
+        for (size_t j : neighbors) {
+            T distance = p[i].distance_to(p[j]);
+            density += this->_mass * kernel(distance);
+        }
+        // Add own particle density
+        density += this->_mass * kernel(0);
         d[i] = density;
     }
 }

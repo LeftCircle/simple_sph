@@ -90,11 +90,11 @@ int main(int argc, char** argv) {
 
 	glewInit();
 	
-	sph_animation.sphSystemData()->set_radius(300.0);
+	sph_animation.sphSystemData()->set_radius(25.0);
 	sph_animation.sphSystemData()->resize(num_particles);
-	//sph_animation.sphSystemData()->randomize_particles(0.0f, 800.0f, 0.0f, 600.0f);
-	sph_animation.sphSystemData()->set_particle_position(0, cato::Vec2d(310.0, 400.0));
-	sph_animation.sphSystemData()->set_particle_position(1, cato::Vec2d(290.0, 400.0));
+	sph_animation.sphSystemData()->randomize_particles(0.0f, 800.0f, 0.0f, 600.0f);
+	// sph_animation.sphSystemData()->set_particle_position(0, cato::Vec2d(310.0, 400.0));
+	// sph_animation.sphSystemData()->set_particle_position(1, cato::Vec2d(290.0, 400.0));
 	// particle_system_solver.particleSystem()->resize(num_particles);
 	// particle_system_solver.particleSystem()->randomize_particles(0.0, 800.0, 0.0, 600.0);
 

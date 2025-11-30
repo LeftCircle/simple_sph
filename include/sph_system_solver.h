@@ -59,8 +59,8 @@ protected:
 	);
 
 	T _viscosity_coefficient = static_cast<T>(0.1);
-	T _eos_exponent = static_cast<T>(7.0);
-	T _pseudoViscosityCoefficient = static_cast<T>(10.0);
+	T _eos_exponent = static_cast<T>(2.0);
+	T _pseudoViscosityCoefficient = static_cast<T>(0.5);
 
 };
 
