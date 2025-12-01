@@ -73,17 +73,20 @@ void ParticleSystem2D<T>::randomize_particles(const T x_min, const T x_max,
 }
 
 template<typename T>
-void ParticleSystem2D<T>::draw_circle(const T x, const T y, const T r) const {
-	const int num_segments = 20;
-	glColor3f(1.0f, 0.0f, 0.0f); // Red color
-	glBegin(GL_LINE_LOOP);
-	for (int i = 0; i < num_segments; ++i) {
-		T theta = 2.0 * 3.1415926 * static_cast<T>(i) / static_cast<T>(num_segments);
-		T dx = r * cos(theta);
-		T dy = r * sin(theta);
-		glVertex2f(x + dx, y + dy);
+void ParticleSystem2D<T>::place_particle_grid(const cato::Vec2T<T>& origin,
+	const cato::Vec2T<T>& spacing,
+	const cato::Vec2i& resolution) {
+	
+	int n_placed = 0;
+	for (int j = 0; j < resolution.y; ++j) {
+		for (int i = 0; i < resolution.x; ++i) {
+			if (n_placed < static_cast<int>(_n_particles)) {
+				_positions[n_placed].x = origin.x + i * spacing.x;
+				_positions[n_placed].y = origin.y + j * spacing.y;
+				++n_placed;
+			}
+		}
 	}
-	glEnd();
 }
 
 template<typename T>

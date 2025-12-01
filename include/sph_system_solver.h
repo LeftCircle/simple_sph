@@ -15,7 +15,7 @@
 #include "vector.h"
 #include "particle_system_solver.h"
 
-const double SPEED_OF_SOUND = 1481.0; // Speed of sound in water in m/s
+const double SPEED_OF_SOUND = 800.0;//1481.0; // Speed of sound in water in m/s
 
 
 template <typename T>

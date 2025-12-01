@@ -113,9 +113,10 @@ void ParticleSystemSolver2D<T>::accumulate_forces() {
 
 template <typename T>
 void ParticleSystemSolver2D<T>::update_graphics() {
+    View* instance = View::instance();
 	for (size_t i = 0; i < _particle_system->n_particles(); ++i) {
 		cato::Vec2T<T> pos = _particle_system->get_position(i);
-		_particle_system->draw_circle(pos.x, pos.y, _particle_system->radius() / static_cast<T>(10));
+		instance->draw_circle(pos.x, pos.y, _particle_system->radius() / static_cast<T>(10));
 	}
 }
 

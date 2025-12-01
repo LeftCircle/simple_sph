@@ -1,8 +1,6 @@
 #ifndef PARTICLE_SYSTEM_ANIMATION_H
 #define PARTICLE_SYSTEM_ANIMATION_H
 
-#include <GL/glew.h>
-#include <GL/freeglut.h>
 #include <vector>
 #include <array>
 #include <memory>
@@ -23,12 +21,16 @@ public:
 	// TO DO -> pack all of the appropriate data into one array
 	// so that we don't need a resize function for each inherited class
 	virtual void resize(const size_t n);
+	
 	void randomize_particles(const T x_min, const T x_max,
 		const T y_min, const T y_max);
+	
+	void place_particle_grid(const cato::Vec2T<T>& origin,
+		const cato::Vec2T<T>& spacing,
+		const cato::Vec2i& resolution);
 
 	T radius() const;
 	void set_radius(const T r);
-	void draw_circle(const T x, const T y, const T r) const;
 
 	T mass() const;
 	void set_mass(const T m);

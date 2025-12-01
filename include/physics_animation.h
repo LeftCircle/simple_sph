@@ -3,6 +3,8 @@
 
 #include <memory>
 
+#include "view.h"
+
 class PhysicsAnimation {
 public:
 	PhysicsAnimation();

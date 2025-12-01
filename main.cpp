@@ -7,11 +7,15 @@
 #include "particle_system_solver.h"
 #include "sph_system_solver.h"
 
+#include "model.h"
+#include "view.h"
+#include "controller.h"
+
 const int WINDOW_WIDTH = 800;
 const int WINDOW_HEIGHT = 600;
 
 //SPHAnimationPtr sph_animation;
-SPHSystemSolver2d sph_animation(2);
+//SPHSystemSolver2d sph_animation(2);
 //ParticleSystemSolver2Dd particle_system_solver(2);
 
 bool advance_sim = true;
@@ -31,7 +35,7 @@ void keyboard(unsigned char key, int x, int y) {
 void display() {
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	sph_animation.update_graphics();
+	//sph_animation.update_graphics();
 	//particle_system_solver.update_graphics();
 	glutSwapBuffers();
 	glutPostRedisplay();
@@ -40,7 +44,7 @@ void display() {
 
 void idle() {
 	if (advance_sim) {
-		sph_animation.update(0.016f);
+		//sph_animation.update(0.001);
 		//particle_system_solver.update(0.016);
 	}
 
@@ -83,27 +87,44 @@ int main(int argc, char** argv) {
 	}
 	int num_particles = std::atoi(argv[1]);
 
-	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);
-	glutInitWindowSize(800, 600);
-	glutCreateWindow("SPH Simulation");
-
-	glewInit();
 	
-	sph_animation.sphSystemData()->set_radius(25.0);
-	sph_animation.sphSystemData()->resize(num_particles);
-	sph_animation.sphSystemData()->randomize_particles(0.0f, 800.0f, 0.0f, 600.0f);
-	// sph_animation.sphSystemData()->set_particle_position(0, cato::Vec2d(310.0, 400.0));
-	// sph_animation.sphSystemData()->set_particle_position(1, cato::Vec2d(290.0, 400.0));
-	// particle_system_solver.particleSystem()->resize(num_particles);
-	// particle_system_solver.particleSystem()->randomize_particles(0.0, 800.0, 0.0, 600.0);
+	Model* model = create_model();
+	View* view = create_view();
+	Controller* controller = create_controller();
 
-	glutReshapeFunc(doReshape);
-	glutKeyboardFunc(keyboard);
-	glutDisplayFunc(display);
-	glutIdleFunc(idle); // Occurs when no user input is occuring or too time consuming to stop events -> less likely for lag spikes
-	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-	glutMainLoop();
+	model->sph_system_solver->sphSystemData()->set_radius(15.0);
+	model->sph_system_solver->sphSystemData()->resize(num_particles);
+	model->sph_system_solver->sphSystemData()->randomize_particles(50.0, 750.0, 50.0, 550.0);
+
+	view->init(argc, argv, WINDOW_WIDTH, WINDOW_HEIGHT);
+	view->main_loop();
+
+	// glutInit(&argc, argv);
+	// glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);
+	// glutInitWindowSize(800, 600);
+	// glutCreateWindow("SPH Simulation");
+
+	// glewInit();
+	
+	// sph_animation.sphSystemData()->set_radius(25.0);
+	// sph_animation.sphSystemData()->resize(num_particles);
+	// sph_animation.sphSystemData()->place_particle_grid(
+	// 	cato::Vec2d(100.0, 100.0), cato::Vec2d(30.0, 30.0),
+	// 	cato::Vec2i( (int)std::sqrt(num_particles), (int)std::sqrt(num_particles))
+	// );
+	
+	// //sph_animation.sphSystemData()->randomize_particles(0.0f, 800.0f, 0.0f, 600.0f);
+	// // sph_animation.sphSystemData()->set_particle_position(0, cato::Vec2d(310.0, 400.0));
+	// // sph_animation.sphSystemData()->set_particle_position(1, cato::Vec2d(290.0, 400.0));
+	// // particle_system_solver.particleSystem()->resize(num_particles);
+	// // particle_system_solver.particleSystem()->randomize_particles(0.0, 800.0, 0.0, 600.0);
+
+	// glutReshapeFunc(doReshape);
+	// glutKeyboardFunc(keyboard);
+	// glutDisplayFunc(display);
+	// glutIdleFunc(idle); // Occurs when no user input is occuring or too time consuming to stop events -> less likely for lag spikes
+	// glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+	// glutMainLoop();
 
 	//sph_animation.reset();
 	return 0;

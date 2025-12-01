@@ -70,9 +70,9 @@ void SPHAnimation::apply_constraints(double delta) {
 }
 
 void SPHAnimation::update_graphics() {
-	for (size_t i = 0; i < _particle_system->n_particles(); ++i) {
-		cato::Vec2T<double> pos = _particle_system->get_position(i);
-		_particle_system->draw_circle(pos.x, pos.y, _particle_system->radius());
-	}
+	// for (size_t i = 0; i < _particle_system->n_particles(); ++i) {
+	// 	cato::Vec2T<double> pos = _particle_system->get_position(i);
+	// 	_particle_system->draw_circle(pos.x, pos.y, _particle_system->radius());
+	// }
 }
 
