@@ -43,12 +43,12 @@ void View::display()
 	glMatrixMode( GL_MODELVIEW );
 	glLoadIdentity();
 
-	//Model::instance()->sph_system_solver->update(0.005);
-    //Model::instance()->sph_system_solver->update_graphics();
+	Model::instance()->sph_system_solver->update(0.016);
+    Model::instance()->sph_system_solver->update_graphics();
 
 
 	// The fun visualization stuff
-	Model::instance()->sph_visualization->update_graphics();
+	//Model::instance()->sph_visualization->update_graphics();
 
 	glutSwapBuffers();
 	glutPostRedisplay();

@@ -90,7 +90,7 @@ void ParticleSystemSolver2D<T>::handle_collisions(double time_step_sec) {
 	CollisionHandler::apply_boundary_collisions(
 		_new_positions,
 		_new_velocities,
-		0.0, 800.0, 0.0, 600.0, 0.1
+		0.0, 800.0, 0.0, 600.0, 0.6
 	);
 }
 
@@ -107,7 +107,7 @@ void ParticleSystemSolver2D<T>::accumulate_forces() {
     #pragma omp parallel for
 	for (size_t i = 0; i < n_particles; i++) {
 		cato::Vec2T<T>& force = _particle_system->get_force(i);
-		force.y += -9.8 * _particle_system->mass();
+		force.y += _gravity * _particle_system->mass();
 	}
 }
 

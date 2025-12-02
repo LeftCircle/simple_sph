@@ -28,9 +28,11 @@ public:
 	void randomize_particles(const T x_min, const T x_max,
 		const T y_min, const T y_max);
 	
-	void place_particle_grid(const cato::Vec2T<T>& origin,
-		const cato::Vec2T<T>& spacing,
-		const cato::Vec2i& resolution);
+	void organize_particles_in_grid(
+		const cato::Vec2i& origin,
+		const cato::Vec2i& spacing,
+		const cato::Vec2i& resolution
+	);
 
 	T radius() const;
 	void set_radius(const T r);
@@ -64,14 +66,19 @@ public:
 	}
 
 	// Neighbor lookup structures
-	void build_neighbor_lookup(int resolution_x, int resolution_y, double cell_size);
+	void build_neighbor_lookup(
+		int resolution_x,
+		int resolution_y,
+		double cell_size,
+		const std::vector<cato::Vec2T<T>>& positions
+	);
 	void find_each_neighbor();
 
 	
 protected:
 	size_t _n_particles;
 	T _radius = static_cast<T>(300);
-	T _mass = static_cast<T>(1);
+	T _mass = static_cast<T>(1.0);
 
 	// Basic vectors containing the x,y positions, velocities, and forces
 	std::vector<cato::Vec2T<T>> _positions;

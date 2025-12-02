@@ -60,7 +60,10 @@ protected:
 	T _viscosity_coefficient = static_cast<T>(0.1);
 	T _eos_exponent = static_cast<T>(1.0);
 	T _pseudoViscosityCoefficient = static_cast<T>(0.5);
-	T speed_of_sound = static_cast<T>(800.0);
+	T speed_of_sound = static_cast<T>(45.0);
+	T negative_pressure_scale = static_cast<T>(0.0);
+	std::vector<cato::Vec2T<T>> _predicted_positions;
+	std::vector<cato::Vec2T<T>> _predicted_velocities;
 
 };
 

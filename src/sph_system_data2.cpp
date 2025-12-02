@@ -24,18 +24,18 @@ void SPHSystemData2<T>::resize(const size_t n) {
 }
 
 template<typename T>
-void SPHSystemData2<T>::update_densities() {
+void SPHSystemData2<T>::update_densities(const std::vector<cato::Vec2T<T>>& positions) {
     // This will update densities for all particles
     auto& d = this->get_densities();
-    auto& p = this->get_positions();
     SphSpikyKernal2<T> kernel(this->radius());
     size_t n_particles = this->n_particles();
+    
     #pragma omp parallel for
     for (size_t i = 0; i < n_particles; i++) {
         T density = static_cast<T>(0);
         const auto& neighbors = this->_neighbor_indices[i];
         for (size_t j : neighbors) {
-            T distance = p[i].distance_to(p[j]);
+            T distance = positions[i].distance_to(positions[j]);
             density += this->_mass * kernel(distance);
         }
         // Add own particle density
@@ -115,7 +115,7 @@ T SPHSystemData2<T>::laplacian_at(size_t particle_n,
     auto& d = this->get_densities();
     auto& p = this->get_positions();
     auto origin = p[particle_n];
-    SphStdKernal2<T> kernel(this->_radius);
+    SphSpikyKernal2<T> kernel(this->_radius);
     const auto& neighbors = this->_neighbor_indices[particle_n];
 
     // TODO -> Create a for each neighbor function

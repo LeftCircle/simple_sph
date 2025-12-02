@@ -36,6 +36,7 @@ protected:
     virtual void on_begin_advance_timestep(double time_step_sec) {}
     virtual void on_end_advance_timestep(double time_step_sec) {}
     std::shared_ptr<ParticleSystem2D<T>> _particle_system;
+    T _gravity = static_cast<T>(-9.8);
 
 private:
     void begin_advance_timestep(double time_step_sec);

@@ -2,12 +2,12 @@
 
 template<typename T>
 ParticleSystem2D<T>::ParticleSystem2D()
-	: _n_particles(0), _radius(10.0), _mass(1.0) {
+	: _n_particles(0), _radius(10.0), _mass(100.0) {
 }
 
 template<typename T>
 ParticleSystem2D<T>::ParticleSystem2D(size_t n_particles)
-	: _n_particles(n_particles), _radius(10.0), _mass(1.0) {
+	: _n_particles(n_particles), _radius(10.0), _mass(100.0) {
 	_positions.resize(_n_particles, cato::Vec2T<T>{ 0.0, 0.0 });
 	_velocities.resize(_n_particles, cato::Vec2T<T>{ 0.0, 0.0 });
 	_forces.resize(_n_particles, cato::Vec2T<T>{ 0.0, 0.0 });
@@ -73,28 +73,37 @@ void ParticleSystem2D<T>::randomize_particles(const T x_min, const T x_max,
 }
 
 template<typename T>
-void ParticleSystem2D<T>::place_particle_grid(const cato::Vec2T<T>& origin,
-	const cato::Vec2T<T>& spacing,
-	const cato::Vec2i& resolution) {
-	
-	int n_placed = 0;
-	for (int j = 0; j < resolution.y; ++j) {
-		for (int i = 0; i < resolution.x; ++i) {
-			if (n_placed < static_cast<int>(_n_particles)) {
-				_positions[n_placed].x = origin.x + i * spacing.x;
-				_positions[n_placed].y = origin.y + j * spacing.y;
-				++n_placed;
-			}
-		}
-	}
+void ParticleSystem2D<T>::organize_particles_in_grid(
+    const cato::Vec2i& origin,
+    const cato::Vec2i& spacing,
+    const cato::Vec2i& resolution
+) {
+    int n_particles = resolution.x * resolution.y;
+    resize(n_particles);
+    cato::Vec2i blc = origin - cato::Vec2i{
+        (resolution.x - 1) * spacing.x / 2,
+        (resolution.y - 1) * spacing.y / 2
+    };
+    for (int j = 0; j < resolution.y; ++j) {
+        for (int i = 0; i < resolution.x; ++i) {
+            int index = j * resolution.x + i;
+            cato::Vec2i pos = blc + cato::Vec2i{ i * spacing.x, j * spacing.y };
+            set_particle_position(index, cato::Vec2T<T>{ static_cast<T>(pos.x), static_cast<T>(pos.y) });
+        }
+    }
 }
 
 template<typename T>
-void ParticleSystem2D<T>::build_neighbor_lookup(int resolution_x, int resolution_y, double cell_size) {
+void ParticleSystem2D<T>::build_neighbor_lookup(
+	int resolution_x,
+	int resolution_y,
+	double cell_size,
+	const std::vector<cato::Vec2T<T>>& positions
+) {
 	_neighbor_lookup = std::make_shared<PointNeighborLookupHashGrid2<T>>(
 		cato::Vec2i{resolution_x, resolution_y}, cell_size);
 	
-	_neighbor_lookup->build(_positions);
+	_neighbor_lookup->build(positions);
 }
 
 template<typename T>

@@ -33,7 +33,7 @@ public:
 	// functions, the density term cancels out in the SPH summation, so we have
 	// a special helper function for it. That, and density is used to calculate
 	// Every other interpolation, so it should be done first.
-	void update_densities();
+	void update_densities(const std::vector<cato::Vec2T<T>>& positions);
 
 	T sum_of_nearby_kernal(const cato::Vec2T<T>& position) const;
 
@@ -55,7 +55,7 @@ private:
 	std::vector<T> _densities;
 	std::vector<T> _pressures;
 
-	T _target_density = static_cast<T>(0.2);
+	T _target_density = static_cast<T>(0.01);
 
 };
 

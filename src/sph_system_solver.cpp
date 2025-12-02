@@ -27,21 +27,28 @@ void SPHSystemSolver2T<T>::on_update(double delta){
 template <typename T>
 void SPHSystemSolver2T<T>::on_begin_advance_timestep(double time_step_sec) {
     auto particles = sphSystemData();
+
+    auto& p = particles->get_positions();
+    auto& v = particles->get_velocities();
+    // Let's build the predicted positions and velocities
+    size_t n_particles = particles->n_particles();
+    _predicted_positions.resize(n_particles);
+    _predicted_velocities.resize(n_particles);
+    
+    #pragma omp parallel for
+    for (size_t i = 0; i < n_particles; ++i) {
+        _predicted_velocities[i] = v[i] + time_step_sec * particles->get_force(i) / particles->mass();
+        _predicted_positions[i] = p[i] + time_step_sec * _predicted_velocities[i];
+    }
+        
+
     const double cell_size = particles->radius() * 2.0;
     const int resolution_x = static_cast<int>(800.0 / cell_size) + 1;
     const int resolution_y = static_cast<int>(600.0 / cell_size) + 1;
-    particles->build_neighbor_lookup(resolution_x, resolution_y, cell_size);
+    particles->build_neighbor_lookup(resolution_x, resolution_y, cell_size, _predicted_positions);
     particles->find_each_neighbor();
-    // Let's print out the particle neighbor list
-    // for (size_t i = 0; i < particles->n_particles(); ++i) {
-    //     const auto& neighbors = particles->get_neighbors(i);
-    //     std::cout << "Particle " << i << " has " << neighbors.size() << " neighbors: ";
-    //     for (size_t j : neighbors) {
-    //         std::cout << j << " ";
-    //     }
-    //     std::cout << "\n";
-    // }
-    particles->update_densities();
+    
+    particles->update_densities(_predicted_positions);
 }
 
 template <typename T>
@@ -50,7 +57,6 @@ void SPHSystemSolver2T<T>::accumulate_forces() {
     // print out particle 0 force for debugging
     auto particles = sphSystemData();
     auto& f = particles->get_forces();
-    // std::cout << "Particle 0 force = (" << f[0].x << ", " << f[0].y << ")\n";
 
     accumulate_non_pressure_forces();
     // std::cout << "After non-pressure forces, Particle 0 force = (" << f[0].x << ", " << f[0].y << ")\n";
@@ -93,11 +99,22 @@ void SPHSystemSolver2T<T>::accumulate_pressure_forces(
         for (size_t j : neighbors) {
             cato::Vec2T<T> rij = positions[i] - positions[j];
             T dist = rij.magnitude();
-            if (dist > 0) {
+            if (dist > 0.0001) {
                 cato::Vec2T<T> dir = rij / dist;                
                 T pressure_term = (pressures[i] / (densities[i] * densities[i]) +
                                    pressures[j] / (densities[j] * densities[j]));
-                cato::Vec2T<T> pressure_force = -mass_sq * pressure_term * kernel.gradient(dist, dir);
+                cato::Vec2T<T> pressure_force = mass_sq * pressure_term * kernel.gradient(dist, dir);
+                // if (i == 0){
+                    
+                //     std::cout << "pressure force from particle " << j << " to 0 = ("
+                //               << pressure_force.x << ", " << pressure_force.y << ")\n";
+                //     std::cout << "  dist = " << dist << ", dir = ("
+                //               << dir.x << ", " << dir.y << ")\n";
+                //     std::cout << "  pressure[i] = " << pressures[i] << ", pressure[j] = " << pressures[j] << "\n";
+                //     std::cout << "  density[i] = " << densities[i] << ", density[j] = " << densities[j] << "\n";
+                //     std::cout << "  pressure_term = " << pressure_term << "\n";
+                //     std::cout << "  mass_sq = " << mass_sq << "\n";
+                // }
                 forces[i] += pressure_force;
             }
         }
@@ -113,7 +130,7 @@ void SPHSystemSolver2T<T>::accumulate_viscosity_forces() {
     auto& f = particles->get_forces();
 
     const auto mass_sq = particles->mass() * particles->mass();
-    const SphStdKernal2<T> kernel(particles->radius());
+    const SphSpikyKernal2<T> kernel(particles->radius());
     size_t n_particles = particles->n_particles();
 
     #pragma omp parallel for
@@ -136,6 +153,9 @@ void SPHSystemSolver2T<T>::compute_pressure(){
     T target_density = particles->get_target_density();
     T sos_sq = static_cast<T>(this->speed_of_sound * this->speed_of_sound);
     T eos_scale = static_cast<T>(sos_sq * target_density) / this->_eos_exponent;
+    // std::cout << "EoS scale = " << eos_scale << "\n";
+    // std::cout << "Target density = " << target_density << "\n";
+
     #pragma omp parallel for
     for (size_t i = 0; i < n_particles; ++i) {
         p[i] = compute_pressure_from_eos(
@@ -143,7 +163,7 @@ void SPHSystemSolver2T<T>::compute_pressure(){
             target_density,
             eos_scale,
             this->_eos_exponent,
-            0
+            this->negative_pressure_scale
         );
         // if (i == 0){
         //     std::cout << "Particle " << i << " density = " << d[i]
@@ -162,8 +182,11 @@ double SPHSystemSolver2T<T>::compute_pressure_from_eos(
 ) {
     // -1 is out of the std::power in the code/book, but in the equation??
     // pressure = k / eosExponent * (density / targetDensity - 1) ^ eosExponent
+    //T pressure = eos_scale / eos_exponent *
+    //    (std::pow((density / target_desnsity), eos_exponent) - 1.0);
+    
     T pressure = eos_scale / eos_exponent *
-        (std::pow((density / target_desnsity), eos_exponent) - 1.0);
+        (std::pow((density / target_desnsity - 1.0), eos_exponent));
     if (pressure < 0) {
         pressure *= negative_pressure_scale;
     }

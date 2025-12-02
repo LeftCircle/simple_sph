@@ -34,10 +34,11 @@ void Model::on_up_arrow_pressed() {
     sph_data->build_neighbor_lookup(
         static_cast<int>(800.0 / (new_radius * 2.0)) + 1,
         static_cast<int>(600.0 / (new_radius * 2.0)) + 1,
-        new_radius * 2.0
+        new_radius * 2.0,
+        sph_data->get_positions()
     );
     sph_data->find_each_neighbor();
-    sph_data->update_densities();
+    sph_data->update_densities(sph_data->get_positions());
     double density = sph_visualization->get_special_particle_density();
     std::cout << "Increased radius to " << new_radius << ", special particle density = " << density << "\n";
 }
