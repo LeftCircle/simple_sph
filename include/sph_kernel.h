@@ -180,7 +180,7 @@ inline T SphSpikyKernal2<T>::operator()(T distance) const{
     if (distance * distance >= h2){
         return 0.0;
     } else {
-        T x = (1.0 - (distance) / h1);
+        T x = 1.0 - distance / h1;
         return 10.0 / (PId * h2) * x * x * x;
     }
 }
