@@ -107,16 +107,15 @@ void ParticleSystemSolver2D<T>::accumulate_forces() {
     #pragma omp parallel for
 	for (size_t i = 0; i < n_particles; i++) {
 		cato::Vec2T<T>& force = _particle_system->get_force(i);
-		force.y += -9.81 * _particle_system->mass();
+		force.y += -9.8 * _particle_system->mass();
 	}
 }
 
 template <typename T>
 void ParticleSystemSolver2D<T>::update_graphics() {
-    View* instance = View::instance();
 	for (size_t i = 0; i < _particle_system->n_particles(); ++i) {
 		cato::Vec2T<T> pos = _particle_system->get_position(i);
-		instance->draw_circle(pos.x, pos.y, _particle_system->radius() / static_cast<T>(10));
+		draw_circle(pos.x, pos.y, _particle_system->radius() / static_cast<T>(10));
 	}
 }
 

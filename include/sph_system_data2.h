@@ -55,7 +55,7 @@ private:
 	std::vector<T> _densities;
 	std::vector<T> _pressures;
 
-	T _target_density = static_cast<T>(0.075);
+	T _target_density = static_cast<T>(0.2);
 
 };
 

@@ -43,7 +43,12 @@ void View::display()
 	glMatrixMode( GL_MODELVIEW );
 	glLoadIdentity();
 
-    Model::instance()->sph_system_solver->update_graphics();
+	//Model::instance()->sph_system_solver->update(0.005);
+    //Model::instance()->sph_system_solver->update_graphics();
+
+
+	// The fun visualization stuff
+	Model::instance()->sph_visualization->update_graphics();
 
 	glutSwapBuffers();
 	glutPostRedisplay();
@@ -51,7 +56,7 @@ void View::display()
 
 void View::idle()
 {
-	Model::instance()->sph_system_solver->update(0.005);
+	//Model::instance()->sph_system_solver->update(0.005);
 }
 
 void View::reshape( int w, int h )
@@ -62,24 +67,12 @@ void View::reshape( int w, int h )
 	glViewport( 0, 0, (GLsizei) width, (GLsizei) height );
 	glMatrixMode( GL_PROJECTION );
 	glLoadIdentity();
+	// Needed for drawing the 2D particles
+	gluOrtho2D(0, width, 0, height);
 
 }
 
 void View::main_loop()
 {
 	glutMainLoop();
-}
-
-
-void View::draw_circle(const double x, const double y, const double r) const {
-	const int num_segments = 20;
-	glColor3f(1.0f, 0.0f, 0.0f); // Red color
-	glBegin(GL_LINE_LOOP);
-	for (int i = 0; i < num_segments; ++i) {
-		double theta = 2.0 * 3.1415926 * static_cast<double>(i) / static_cast<double>(num_segments);
-		double dx = r * cos(theta);
-		double dy = r * sin(theta);
-		glVertex2f(x + dx, y + dy);
-	}
-	glEnd();
 }

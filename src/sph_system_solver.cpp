@@ -47,12 +47,13 @@ void SPHSystemSolver2T<T>::on_begin_advance_timestep(double time_step_sec) {
 template <typename T>
 void SPHSystemSolver2T<T>::accumulate_forces() {
     accumulate_pressure_forces();
-    // Print out the pressure forces for debugging
-    //auto&p = sphSystemData()->get_pressures();
-    // for (size_t i = 0; i < p.size(); ++i) {
-    //     std::cout << "Particle " << i << " pressure = " << p[i] << "\n";
-    // }
+    // print out particle 0 force for debugging
+    auto particles = sphSystemData();
+    auto& f = particles->get_forces();
+    // std::cout << "Particle 0 force = (" << f[0].x << ", " << f[0].y << ")\n";
+
     accumulate_non_pressure_forces();
+    // std::cout << "After non-pressure forces, Particle 0 force = (" << f[0].x << ", " << f[0].y << ")\n";
 }
 
 template <typename T>
@@ -69,7 +70,9 @@ void SPHSystemSolver2T<T>::accumulate_pressure_forces() {
     auto& p = particles->get_pressures();
     auto& f = particles->get_forces();
     compute_pressure();
+    //std::cout << "After computing pressure, Particle 0 pressure = " << p[0] << "\n";
     accumulate_pressure_forces(x, d, p, f);
+    //std::cout << "After accumulating pressure forces, Particle 0 force = (" << f[0].x << ", " << f[0].y << ")\n";
 }
 
 template <typename T>
@@ -131,7 +134,8 @@ void SPHSystemSolver2T<T>::compute_pressure(){
     auto& p = particles->get_pressures();
     size_t n_particles = particles->n_particles();
     T target_density = particles->get_target_density();
-    T eos_scale = static_cast<T>(SPEED_OF_SOUND * SPEED_OF_SOUND * target_density) / this->_eos_exponent;
+    T sos_sq = static_cast<T>(this->speed_of_sound * this->speed_of_sound);
+    T eos_scale = static_cast<T>(sos_sq * target_density) / this->_eos_exponent;
     #pragma omp parallel for
     for (size_t i = 0; i < n_particles; ++i) {
         p[i] = compute_pressure_from_eos(
@@ -141,11 +145,29 @@ void SPHSystemSolver2T<T>::compute_pressure(){
             this->_eos_exponent,
             0
         );
-        if (i == 0){
-            std::cout << "Particle " << i << " density = " << d[i]
-                      << ", pressure = " << p[i] << "\n";
-        }
+        // if (i == 0){
+        //     std::cout << "Particle " << i << " density = " << d[i]
+        //               << ", pressure = " << p[i] << "\n";
+        // }
     }
+}
+
+template <typename T>
+double SPHSystemSolver2T<T>::compute_pressure_from_eos(
+    T density,
+    T target_desnsity,
+    T eos_scale,
+    T eos_exponent,
+    T negative_pressure_scale
+) {
+    // -1 is out of the std::power in the code/book, but in the equation??
+    // pressure = k / eosExponent * (density / targetDensity - 1) ^ eosExponent
+    T pressure = eos_scale / eos_exponent *
+        (std::pow((density / target_desnsity), eos_exponent) - 1.0);
+    if (pressure < 0) {
+        pressure *= negative_pressure_scale;
+    }
+    return pressure;
 }
 
 template <typename T>
@@ -203,21 +225,13 @@ void SPHSystemSolver2T<T>::compute_psuedo_viscosity(double time_step_sec) {
 }
 
 template <typename T>
-double SPHSystemSolver2T<T>::compute_pressure_from_eos(
-    T density,
-    T target_desnsity,
-    T eos_scale,
-    T eos_exponent,
-    T negative_pressure_scale
-) {
-    T pressure = eos_scale / eos_exponent *
-        (std::pow((density / target_desnsity) - 1.0, eos_exponent));
-    if (pressure < 0) {
-        pressure *= negative_pressure_scale;
-    }
-    return pressure;
+void SPHSystemSolver2T<T>::update_graphics() {
+    for (size_t i = 0; i < sphSystemData()->n_particles(); ++i) {
+		cato::Vec2T<T> pos = sphSystemData()->get_position(i);
+		draw_solid_circle(pos.x, pos.y, sphSystemData()->radius() / static_cast<T>(10));
+        draw_circle(pos.x, pos.y, sphSystemData()->radius());
+	}
 }
-
 
 // explicit template instantiation
 template class SPHSystemSolver2T<float>;

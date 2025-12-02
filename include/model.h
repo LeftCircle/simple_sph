@@ -5,12 +5,8 @@
 #include <iostream>
 
 
-//#include "sph_system_solver.h"
-
-// Forward declaration to avoid circular dependency
-template<typename T>
-class SPHSystemSolver2T;
-using SPHSystemSolver2d = SPHSystemSolver2T<double>;
+#include "sph_system_solver.h"
+#include "sph_visualization.h"
 
 class Model
 {
@@ -37,6 +33,7 @@ public:
 	void on_left_arrow_pressed();
 
     std::unique_ptr<SPHSystemSolver2d> sph_system_solver;
+    std::unique_ptr<SPHVisualization2D> sph_visualization;
 
 
 private:

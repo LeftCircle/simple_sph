@@ -15,8 +15,6 @@
 #include "vector.h"
 #include "particle_system_solver.h"
 
-const double SPEED_OF_SOUND = 800.0;//1481.0; // Speed of sound in water in m/s
-
 
 template <typename T>
 class SPHSystemSolver2T : public ParticleSystemSolver2D<T> {
@@ -31,6 +29,7 @@ public:
 
 	T get_viscosity_coefficient() const { return _viscosity_coefficient; }
 	void set_viscosity_coefficient(T v) { _viscosity_coefficient = v; }
+	void update_graphics() override;
 
 
 protected:
@@ -59,8 +58,9 @@ protected:
 	);
 
 	T _viscosity_coefficient = static_cast<T>(0.1);
-	T _eos_exponent = static_cast<T>(2.0);
+	T _eos_exponent = static_cast<T>(1.0);
 	T _pseudoViscosityCoefficient = static_cast<T>(0.5);
+	T speed_of_sound = static_cast<T>(800.0);
 
 };
 

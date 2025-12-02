@@ -15,11 +15,10 @@ public:
 
 	static View* instance()
 	{
-	if(pView==nullptr)
-	{
-		pView = new View();
-	}
-	return pView;
+		if(pView==nullptr){
+			pView = new View();
+		}
+		return pView;
 	}
 
 	~View();
@@ -29,8 +28,6 @@ public:
 	void reshape( int w, int h );
 	void idle();
 	void main_loop();
-    
-    void draw_circle(double x, double y, double r) const;
 
 private:
 	

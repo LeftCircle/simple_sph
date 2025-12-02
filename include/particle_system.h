@@ -1,6 +1,9 @@
 #ifndef PARTICLE_SYSTEM_ANIMATION_H
 #define PARTICLE_SYSTEM_ANIMATION_H
 
+
+#include <GL/glew.h>
+#include <GL/glut.h>
 #include <vector>
 #include <array>
 #include <memory>

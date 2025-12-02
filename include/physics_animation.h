@@ -3,7 +3,7 @@
 
 #include <memory>
 
-#include "view.h"
+#include "basic_gl_graphics.h"
 
 class PhysicsAnimation {
 public:
@@ -19,7 +19,6 @@ protected:
 	virtual void integrate(double delta) = 0;
 	virtual void handle_collisions(double delta) = 0;
 	virtual void apply_constraints(double delta) = 0;
-	
 };
 
 

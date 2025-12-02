@@ -23,15 +23,15 @@ public:
 
     
 protected:
-   	// Protected constructor for derived classes to set the particle type
+    // Protected constructor for derived classes to set the particle type
     ParticleSystemSolver2D(const std::shared_ptr<ParticleSystem2D<T>> particle_system);
     void set_particle_system(const std::shared_ptr<ParticleSystem2D<T>> particle_system);
-    
+
     void on_update(double delta) override;
 
     void handle_collisions(double time_step_sec) override;
     void apply_constraints(double time_step_sec) override;
-    
+
     virtual void accumulate_forces();
     virtual void on_begin_advance_timestep(double time_step_sec) {}
     virtual void on_end_advance_timestep(double time_step_sec) {}
