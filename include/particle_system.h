@@ -65,6 +65,13 @@ public:
 		return _neighbor_indices[particle_n];
 	}
 
+	void clear_velocities() {
+		for (size_t i = 0; i < _n_particles; ++i) {
+			_velocities[i].x = static_cast<T>(0);
+			_velocities[i].y = static_cast<T>(0);
+		}
+	}
+
 	// Neighbor lookup structures
 	void build_neighbor_lookup(
 		int resolution_x,

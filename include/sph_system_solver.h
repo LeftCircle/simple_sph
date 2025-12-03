@@ -29,6 +29,15 @@ public:
 
 	T get_viscosity_coefficient() const { return _viscosity_coefficient; }
 	void set_viscosity_coefficient(T v) { _viscosity_coefficient = v; }
+	T get_eos_exponent() const { return _eos_exponent; }
+	void set_eos_exponent(T e) { _eos_exponent = e; }
+	T get_pseudo_viscosity_coefficient() const { return _pseudoViscosityCoefficient; }
+	void set_pseudo_viscosity_coefficient(T v) { _pseudoViscosityCoefficient = v; }
+	T get_speed_of_sound() const { return speed_of_sound; }
+	void set_speed_of_sound(T s) { speed_of_sound = s; }
+	T get_negative_pressure_scale() const { return negative_pressure_scale; }
+	void set_negative_pressure_scale(T s) { negative_pressure_scale = s; }
+
 	void update_graphics() override;
 
 
@@ -58,9 +67,9 @@ protected:
 	);
 
 	T _viscosity_coefficient = static_cast<T>(0.1);
-	T _eos_exponent = static_cast<T>(1.0);
+	T _eos_exponent = static_cast<T>(3.0);
 	T _pseudoViscosityCoefficient = static_cast<T>(0.5);
-	T speed_of_sound = static_cast<T>(45.0);
+	T speed_of_sound = static_cast<T>(175.0);
 	T negative_pressure_scale = static_cast<T>(0.0);
 	std::vector<cato::Vec2T<T>> _predicted_positions;
 	std::vector<cato::Vec2T<T>> _predicted_velocities;

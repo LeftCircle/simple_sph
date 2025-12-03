@@ -32,6 +32,7 @@ void View::init( int argc, char** argv, int _width, int _height)
 
 	glutKeyboardFunc([](unsigned char key, int x, int y) { Controller::instance()->keyboard(key, x, y); });
 	glutSpecialFunc([](int key, int x, int y) { Controller::instance()->special_keys(key, x, y); });
+	glutMouseFunc([](int button, int state, int x, int y) { Controller::instance()->mouse(button, state, x, y); });
 	glutDisplayFunc( [](void){ View::instance() -> display(); } );
 	glutReshapeFunc( [](int w, int h){ View::instance() -> reshape(w,h); } );
 	glutIdleFunc( [](){ View::instance() -> idle(); } );
@@ -43,19 +44,21 @@ void View::display()
 	glMatrixMode( GL_MODELVIEW );
 	glLoadIdentity();
 
-	Model::instance()->sph_system_solver->update(0.016);
     Model::instance()->sph_system_solver->update_graphics();
-
-
+	
 	// The fun visualization stuff
 	//Model::instance()->sph_visualization->update_graphics();
-
+	
 	glutSwapBuffers();
-	glutPostRedisplay();
 }
 
 void View::idle()
 {
+	//auto start_time = glutGet(GLUT_ELAPSED_TIME);
+	Model::instance()->simulate();
+	//auto end_time = glutGet(GLUT_ELAPSED_TIME);
+	//std::cout << "Frame time: " << (end_time - start_time) << " ms\n";
+	glutPostRedisplay();
 	//Model::instance()->sph_system_solver->update(0.005);
 }
 

@@ -14,6 +14,38 @@ Model* create_model() {
     return model;
 }
 
+void Model::simulate() {
+    if (Controller::instance()->is_left_mouse_button_down()) {
+        // Apply an interaction force at the mouse position
+        cato::Vec2i mouse_pos = Controller::instance()->get_current_mouse_position();
+        sph_system_solver->add_interaction_force(
+            cato::Vec2d(static_cast<double>(mouse_pos.x), static_cast<double>(600 - mouse_pos.y)),
+            200.0,
+            1500.0
+        );
+        //std::cout << "Applying interaction force at (" << mouse_pos.x << ", " << (600 - mouse_pos.y) << ")\n";
+    } else if (Controller::instance()->is_right_mouse_button_down()) {
+        // Apply an interaction force at the mouse position
+        cato::Vec2i mouse_pos = Controller::instance()->get_current_mouse_position();
+        sph_system_solver->add_interaction_force(
+            cato::Vec2d(static_cast<double>(mouse_pos.x), static_cast<double>(600 - mouse_pos.y)),
+            200.0,
+            1500.0,
+            -1.0
+        );
+        //std::cout << "Applying interaction force at (" << mouse_pos.x << ", " << (600 - mouse_pos.y) << ")\n";
+    } else {
+        // No interaction force
+        sph_system_solver->add_interaction_force(
+            cato::Vec2d(0.0, 0.0),
+            0.0,
+            0.0
+        );
+    }
+    
+    sph_system_solver->update(0.05);
+}
+
 void Model::on_J_pressed() {
 
 }

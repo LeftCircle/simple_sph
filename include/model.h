@@ -4,7 +4,8 @@
 #include <memory>
 #include <iostream>
 
-
+#include "controller.h"
+#include "vector.h"
 #include "sph_system_solver.h"
 #include "sph_visualization.h"
 
@@ -34,6 +35,8 @@ public:
 
     std::unique_ptr<SPHSystemSolver2d> sph_system_solver;
     std::unique_ptr<SPHVisualization2D> sph_visualization;
+
+	void simulate();
 
 
 private:

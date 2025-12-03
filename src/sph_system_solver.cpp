@@ -249,11 +249,18 @@ void SPHSystemSolver2T<T>::compute_psuedo_viscosity(double time_step_sec) {
 
 template <typename T>
 void SPHSystemSolver2T<T>::update_graphics() {
+    T r = sphSystemData()->radius() / static_cast<T>(10);
+    auto particles = sphSystemData();
     for (size_t i = 0; i < sphSystemData()->n_particles(); ++i) {
 		cato::Vec2T<T> pos = sphSystemData()->get_position(i);
-		draw_solid_circle(pos.x, pos.y, sphSystemData()->radius() / static_cast<T>(10));
-        draw_circle(pos.x, pos.y, sphSystemData()->radius());
-	}
+		//draw_solid_circle(pos.x, pos.y, sphSystemData()->radius() / static_cast<T>(10));
+        //draw_circle(pos.x, pos.y, sphSystemData()->radius());
+        auto v = particles->get_velocity(i);
+        draw_velocity_circle(
+            pos.x, pos.y, r,
+            v.x, v.y
+        );
+    }
 }
 
 // explicit template instantiation

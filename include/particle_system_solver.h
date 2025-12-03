@@ -21,6 +21,10 @@ public:
     }
     void update_graphics() override;
 
+    T get_gravity() const { return _gravity; }
+    void set_gravity(T g) { _gravity = g; }
+    void add_interaction_force(const cato::Vec2T<T>& position, T radius, T strength, T direction = static_cast<T>(1));
+
     
 protected:
     // Protected constructor for derived classes to set the particle type
@@ -33,6 +37,7 @@ protected:
     void apply_constraints(double time_step_sec) override;
 
     virtual void accumulate_forces();
+    virtual void apply_interaction_forces();
     virtual void on_begin_advance_timestep(double time_step_sec) {}
     virtual void on_end_advance_timestep(double time_step_sec) {}
     std::shared_ptr<ParticleSystem2D<T>> _particle_system;
@@ -42,7 +47,11 @@ private:
     void begin_advance_timestep(double time_step_sec);
     void end_advance_timestep(double time_step_sec);
     void integrate(double time_step_sec) override;
-    
+
+    T _interactive_force_strength = static_cast<T>(1000);
+    T _interactive_force_radius = static_cast<T>(50);
+    cato::Vec2T<T> _interactive_force_position = cato::Vec2T<T>(0, 0);
+    T _interactive_force_direction = static_cast<T>(1);
     
     std::vector<cato::Vec2T<T>> _new_positions;
     std::vector<cato::Vec2T<T>> _new_velocities;    

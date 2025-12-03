@@ -50,12 +50,13 @@ public:
 	T laplacian_at(size_t particle_n, const std::vector<T>& values) const;
 	
 	T get_target_density() const { return _target_density; }
+	void set_target_density(T d) { _target_density = d; }
 
 private:
 	std::vector<T> _densities;
 	std::vector<T> _pressures;
 
-	T _target_density = static_cast<T>(0.01);
+	T _target_density = static_cast<T>(0.1);
 
 };
 

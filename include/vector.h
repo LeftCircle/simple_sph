@@ -24,6 +24,14 @@ struct Vec2T{
 		return (*this - v).magnitude();
 	}
 
+	Vec2T normalized() const {
+		T mag = magnitude();
+		if (mag < 0.0001){
+			return Vec2T{ static_cast<T>(0), static_cast<T>(0) };
+		}
+		return Vec2T{ x / mag, y / mag };
+	}
+
 	Vec2T operator+(const Vec2T& v) const {
 		return Vec2T{ x + v.x, y + v.y };
 	}
@@ -80,6 +88,14 @@ struct Vec3T{
 
 	T distance_to(const Vec3T& v) const {
 		return (*this - v).magnitude();
+	}
+
+	Vec3T normalized() const {
+		T mag = magnitude();
+		if (mag < 0.0001){
+			return Vec3T{ 0, 0, 0 };
+		}
+		return Vec3T{ x / mag, y / mag, z / mag };
 	}
 
 	Vec3T operator+(const Vec3T& v) const {

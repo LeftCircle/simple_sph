@@ -28,3 +28,21 @@ void draw_solid_circle(double x, double y, double r) {
     }
     glEnd();
 }
+
+void draw_velocity_circle(double x, double y, double r, double vx, double vy) {
+    const int num_segments = 20;
+    double speed = std::sqrt(vx * vx + vy * vy);
+    double max_speed = 100.0; // Define a maximum speed for color mapping
+    double t = std::min(speed / max_speed, 1.0);
+    colorRGB color = lerp_color(BLUE, RED, t);
+
+    glColor3f(color.r, color.g, color.b);
+    glBegin(GL_TRIANGLE_FAN);
+    for (int i = 0; i < num_segments; ++i) {
+        double theta = 2.0 * 3.1415926 * static_cast<double>(i) / static_cast<double>(num_segments);
+        double dx = r * cos(theta);
+        double dy = r * sin(theta);
+        glVertex2f(x + dx, y + dy);
+    }
+    glEnd();
+}

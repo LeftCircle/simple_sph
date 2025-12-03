@@ -25,6 +25,14 @@ template <typename T>
 ParticleSystemSolver2D<T>::~ParticleSystemSolver2D() {}
 
 template <typename T>
+void ParticleSystemSolver2D<T>::add_interaction_force(const cato::Vec2T<T>& position, T radius, T strength, T direction) {
+    _interactive_force_position = position;
+    _interactive_force_radius = radius;
+    _interactive_force_strength = strength;
+    _interactive_force_direction = direction > 0 ? static_cast<T>(1) : static_cast<T>(-1);
+}
+
+template <typename T>
 void ParticleSystemSolver2D<T>::on_update(double delta) {
     begin_advance_timestep(delta);
     accumulate_forces();
@@ -109,6 +117,35 @@ void ParticleSystemSolver2D<T>::accumulate_forces() {
 		cato::Vec2T<T>& force = _particle_system->get_force(i);
 		force.y += _gravity * _particle_system->mass();
 	}
+    apply_interaction_forces();
+}
+
+template<typename T>
+void ParticleSystemSolver2D<T>::apply_interaction_forces() {
+    if (std::abs(_interactive_force_strength) < 0.0001) {
+        return;
+    }
+    std::cout << "Interaction force at (" 
+            << _interactive_force_position.x << ", " 
+            << _interactive_force_position.y << ")"
+            << " with radius " << _interactive_force_radius
+            << " and strength " << _interactive_force_strength << "\n";
+    size_t n_particles = _particle_system->n_particles();
+    auto& forces = _particle_system->get_forces();
+    auto& positions = _particle_system->get_positions();
+    #pragma omp parallel for
+    for (size_t i = 0; i < n_particles; ++i) {
+        cato::Vec2T<T> p_to_interaction = _interactive_force_position - positions[i];
+        T dist_sq = p_to_interaction.magnitude_squared();
+        T radius_sq = _interactive_force_radius * _interactive_force_radius;
+        if (dist_sq < radius_sq) {
+            T dist = std::sqrt(dist_sq);
+            T falloff = 1.0 - (dist_sq / radius_sq);
+            cato::Vec2T<T> dir = p_to_interaction.normalized();
+            cato::Vec2T<T> interaction_force = dir * (_interactive_force_strength * falloff * _interactive_force_direction);
+            forces[i] += interaction_force + forces[i].magnitude() * dir * _interactive_force_direction * 0.5;
+        }
+    }
 }
 
 template <typename T>
