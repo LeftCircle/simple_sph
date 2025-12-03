@@ -165,14 +165,19 @@ void Controller::mouse(int button, int state, int x, int y){
 				_left_mouse_button_down = false;
 			}
 			break;
-		case GLUT_RIGHT_BUTTON:
+			case GLUT_RIGHT_BUTTON:
 			if (state == GLUT_DOWN){
 				_right_mouse_button_down = true;
 			} else if (state == GLUT_UP){
 				_right_mouse_button_down = false;
 			}
 			break;
-	}
+		}
+	_last_mouse_position = _current_mouse_position;
+	_current_mouse_position = cato::Vec2i(x, y);
+}
+
+void Controller::mouse_motion(int x, int y){
 	_last_mouse_position = _current_mouse_position;
 	_current_mouse_position = cato::Vec2i(x, y);
 }

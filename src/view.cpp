@@ -33,6 +33,8 @@ void View::init( int argc, char** argv, int _width, int _height)
 	glutKeyboardFunc([](unsigned char key, int x, int y) { Controller::instance()->keyboard(key, x, y); });
 	glutSpecialFunc([](int key, int x, int y) { Controller::instance()->special_keys(key, x, y); });
 	glutMouseFunc([](int button, int state, int x, int y) { Controller::instance()->mouse(button, state, x, y); });
+	glutPassiveMotionFunc([](int x, int y) { Controller::instance()->mouse_motion(x, y); });
+	glutMotionFunc([](int x, int y) { Controller::instance()->mouse_motion(x, y); });
 	glutDisplayFunc( [](void){ View::instance() -> display(); } );
 	glutReshapeFunc( [](int w, int h){ View::instance() -> reshape(w,h); } );
 	glutIdleFunc( [](){ View::instance() -> idle(); } );

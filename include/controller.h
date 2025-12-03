@@ -28,6 +28,8 @@ public:
 	void special_keys(int key, int x, int y);
 	void print_controlls();
 	void mouse(int button, int state, int x, int y);
+	void mouse_motion(int x, int y);
+
 	bool is_left_mouse_button_down() const { return _left_mouse_button_down; }
 	bool is_right_mouse_button_down() const { return _right_mouse_button_down; }
 	cato::Vec2i get_current_mouse_position() const { return _current_mouse_position; }

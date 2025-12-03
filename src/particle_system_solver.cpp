@@ -125,11 +125,6 @@ void ParticleSystemSolver2D<T>::apply_interaction_forces() {
     if (std::abs(_interactive_force_strength) < 0.0001) {
         return;
     }
-    std::cout << "Interaction force at (" 
-            << _interactive_force_position.x << ", " 
-            << _interactive_force_position.y << ")"
-            << " with radius " << _interactive_force_radius
-            << " and strength " << _interactive_force_strength << "\n";
     size_t n_particles = _particle_system->n_particles();
     auto& forces = _particle_system->get_forces();
     auto& positions = _particle_system->get_positions();
