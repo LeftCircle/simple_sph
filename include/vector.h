@@ -33,6 +33,10 @@ struct Vec2T{
 		return Vec2T{ x / mag, y / mag };
 	}
 
+	T dot(const Vec2T& v) const {
+		return x * v.x + y * v.y;
+	}
+
 	Vec2T operator+(const Vec2T& v) const {
 		return Vec2T{ x + v.x, y + v.y };
 	}
@@ -97,6 +101,10 @@ struct Vec3T{
 
 	T magnitude_squared() const {
 		return x * x + y * y + z * z;
+	}
+
+	T dot(const Vec3T& v) const {
+		return x * v.x + y * v.y + z * v.z;
 	}
 
 	T distance_to(const Vec3T& v) const {
