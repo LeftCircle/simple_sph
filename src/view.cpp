@@ -37,7 +37,9 @@ void View::init( int argc, char** argv, int _width, int _height)
 	glutMotionFunc([](int x, int y) { Controller::instance()->mouse_motion(x, y); });
 	glutDisplayFunc( [](void){ View::instance() -> display(); } );
 	glutReshapeFunc( [](int w, int h){ View::instance() -> reshape(w,h); } );
-	glutIdleFunc( [](){ View::instance() -> idle(); } );
+	//glutIdleFunc( [](){ View::instance() -> idle(); } );
+
+	glutTimerFunc(16, [](int){ View::instance()->idle(); }, 0);
 }
 
 void View::display()
@@ -62,6 +64,8 @@ void View::idle()
 	//std::cout << "Frame time: " << (end_time - start_time) << " ms\n";
 	glutPostRedisplay();
 	//Model::instance()->sph_system_solver->update(0.005);
+	glutTimerFunc(16, [](int){ View::instance()->idle(); }, 0);
+
 }
 
 void View::reshape( int w, int h )

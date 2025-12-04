@@ -16,15 +16,22 @@
 #include "particle_system_solver.h"
 
 
-template <typename T>
-class SPHSystemSolver2T : public ParticleSystemSolver<cato::Vec2T<T>> {
+template <typename VecType>
+class SPHSystemSolver : public ParticleSystemSolver<VecType> {
 public:
-	SPHSystemSolver2T();
-	SPHSystemSolver2T(size_t n_particles);
-	virtual ~SPHSystemSolver2T();
+	using T = decltype(VecType().x);
+	using Kernel = std::conditional_t<std::is_same<VecType, cato::Vec2T<T>>::value,
+		SphSpikyKernal2<T>,
+		SphSpikyKernal3<T>
+	>;
 
-	std::shared_ptr<SPHSystemData2<T>> sphSystemData() {
-		return std::static_pointer_cast<SPHSystemData2<T>>(this->_particle_system);
+
+	SPHSystemSolver();
+	SPHSystemSolver(size_t n_particles);
+	virtual ~SPHSystemSolver();
+
+	std::shared_ptr<SPHSystemData<VecType>> sphSystemData() {
+		return std::static_pointer_cast<SPHSystemData<VecType>>(this->_particle_system);
 	}
 
 	T get_viscosity_coefficient() const { return _viscosity_coefficient; }
@@ -50,10 +57,10 @@ protected:
 	virtual void accumulate_non_pressure_forces();
 	virtual void accumulate_pressure_forces();
 	virtual void accumulate_pressure_forces(
-		const std::vector<cato::Vec2T<T>>& positions,
+		const std::vector<VecType>& positions,
 		const std::vector<T>& densities,
 		const std::vector<T>& pressures,
-		std::vector<cato::Vec2T<T>>& forces);
+		std::vector<VecType>& forces);
 	void accumulate_viscosity_forces();
 	void compute_psuedo_viscosity(double time_step_sec);
 
@@ -71,13 +78,13 @@ protected:
 	T _pseudoViscosityCoefficient = static_cast<T>(0.5);
 	T speed_of_sound = static_cast<T>(175.0);
 	T negative_pressure_scale = static_cast<T>(0.0);
-	std::vector<cato::Vec2T<T>> _predicted_positions;
-	std::vector<cato::Vec2T<T>> _predicted_velocities;
+	std::vector<VecType> _predicted_positions;
+	std::vector<VecType> _predicted_velocities;
 
 };
 
-using SPHSystemSolver2d = SPHSystemSolver2T<double>;
-using SPHSystemSolver2f = SPHSystemSolver2T<float>;
+using SPHSystemSolver2d = SPHSystemSolver<cato::Vec2d>;
+using SPHSystemSolver2f = SPHSystemSolver<cato::Vec2f>;
 
 
 #endif

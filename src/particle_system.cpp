@@ -4,12 +4,12 @@
 
 template<typename VecType>
 ParticleSystem<VecType>::ParticleSystem()
-	: _n_particles(0), _radius(10.0), _mass(100.0) {
+	: _n_particles(0), _radius(10.0), _mass(1.0) {
 }
 
 template<typename VecType>
 ParticleSystem<VecType>::ParticleSystem(size_t n_particles)
-	: _radius(10.0), _mass(100.0) {
+	: _radius(10.0), _mass(1.0) {
 	resize(n_particles);
 }
 
