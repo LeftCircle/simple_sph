@@ -17,7 +17,7 @@
 
 
 template <typename T>
-class SPHSystemSolver2T : public ParticleSystemSolver2D<T> {
+class SPHSystemSolver2T : public ParticleSystemSolver<cato::Vec2T<T>> {
 public:
 	SPHSystemSolver2T();
 	SPHSystemSolver2T(size_t n_particles);

@@ -22,6 +22,11 @@ void Controller::keyboard( unsigned char key, int x, int y )
 		case 27: // esc
 			exit(0);
 			break;
+		case 'c':{
+			// print controls
+			print_controls();
+			break;
+		}
 		case 'd':{
 			// Decrase the target density
 			double new_density = particle_system->get_target_density() * 0.9;
@@ -76,6 +81,17 @@ void Controller::keyboard( unsigned char key, int x, int y )
 			std::cout << "Increased particle radius to " << particle_system->radius() << "\n";
 			break;
 		}
+		case 'n':{
+			// decrease negative pressure mult
+			model->sph_system_solver->set_negative_pressure_scale(model->sph_system_solver->get_negative_pressure_scale() - 0.1);
+			std::cout << "Decreased negative pressure scale to " << model->sph_system_solver->get_negative_pressure_scale() << "\n";
+			break;
+		}
+		case 'N':{
+			model->sph_system_solver->set_negative_pressure_scale(model->sph_system_solver->get_negative_pressure_scale() + 0.1);
+			std::cout << "Increased negative pressure scale to " << model->sph_system_solver->get_negative_pressure_scale() << "\n";
+			break;
+		}
 		case 'm':{
 			// Decrase the mass of the particles
 			particle_system->set_mass(particle_system->mass() * 0.9);
@@ -113,8 +129,6 @@ void Controller::keyboard( unsigned char key, int x, int y )
 			std::cout << "Increased speed of sound to " << model->sph_system_solver->get_speed_of_sound() << "\n";
 			break;
 		}
-		
-		
 		case 'v':{
 			// decrease viscosity
 			double new_viscosity = model->sph_system_solver->get_viscosity_coefficient() * 0.9;
@@ -182,7 +196,7 @@ void Controller::mouse_motion(int x, int y){
 	_current_mouse_position = cato::Vec2i(x, y);
 }
 
-void Controller::print_controlls(){
+void Controller::print_controls(){
 	std::cout << "Controls:\n";
 	std::cout << "  Esc: Exit the program\n";
 	std::cout << "  m/M: Decrease/Increase particle mass\n";

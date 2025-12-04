@@ -1,7 +1,6 @@
 #include <iostream>
 #include <cstdlib>
 
-#include "sph_animation.h"
 #include "command_line_parser.h"
 #include "tests.h"
 #include "particle_system_solver.h"

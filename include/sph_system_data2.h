@@ -8,14 +8,8 @@
 #include "vector.h"
 #include "sph_kernel.h"
 
-// TODO -> Update the templating to take in either a 2D or 3D vector. 
-// When defining the functions that are different for 2D vs 3D,
-// use if constexpr to select the right code path.
-// See https://en.cppreference.com/w/cpp/language/if_constexpr
-// Or maybe just declare the function in the header for 2D and 3D specializations
-
 template<typename T>
-class SPHSystemData2 : public ParticleSystem2D<T> {
+class SPHSystemData2 : public ParticleSystem<cato::Vec2T<T>> {
 public:
 	SPHSystemData2();
 	SPHSystemData2(size_t n_particles);

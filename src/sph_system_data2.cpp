@@ -3,12 +3,12 @@
 
 
 template<typename T>
-SPHSystemData2<T>::SPHSystemData2() : ParticleSystem2D<T>() {
+SPHSystemData2<T>::SPHSystemData2() : ParticleSystem<cato::Vec2T<T>>() {
     _densities.resize(this->n_particles(), static_cast<T>(0));
 }
 
 template<typename T>
-SPHSystemData2<T>::SPHSystemData2(size_t n_particles) : ParticleSystem2D<T>(n_particles) {
+SPHSystemData2<T>::SPHSystemData2(size_t n_particles) : ParticleSystem<cato::Vec2T<T>>(n_particles) {
     _densities.resize(this->n_particles(), static_cast<T>(0));
 }
 
@@ -18,7 +18,7 @@ SPHSystemData2<T>::~SPHSystemData2() {}
 
 template<typename T>
 void SPHSystemData2<T>::resize(const size_t n) {
-    ParticleSystem2D<T>::resize(n);
+    ParticleSystem<cato::Vec2T<T>>::resize(n);
     _densities.resize(this->n_particles(), static_cast<T>(0));
     _pressures.resize(this->n_particles(), static_cast<T>(0));
 }

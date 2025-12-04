@@ -26,7 +26,7 @@ public:
 
 	void keyboard( unsigned char key, int x, int y );
 	void special_keys(int key, int x, int y);
-	void print_controlls();
+	void print_controls();
 	void mouse(int button, int state, int x, int y);
 	void mouse_motion(int x, int y);
 

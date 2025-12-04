@@ -1,13 +1,13 @@
 #include "sph_system_solver.h"
 
 template <typename T>
-SPHSystemSolver2T<T>::SPHSystemSolver2T() : ParticleSystemSolver2D<T>() {
+SPHSystemSolver2T<T>::SPHSystemSolver2T() : ParticleSystemSolver<cato::Vec2T<T>>() {
     auto particles = std::make_shared<SPHSystemData2<T>>();
     this->set_particle_system(particles);
 }
 
 template <typename T>
-SPHSystemSolver2T<T>::SPHSystemSolver2T(size_t n_particles) : ParticleSystemSolver2D<T>() {
+SPHSystemSolver2T<T>::SPHSystemSolver2T(size_t n_particles) : ParticleSystemSolver<cato::Vec2T<T>>() {
     auto particles = std::make_shared<SPHSystemData2<T>>(n_particles);
     this->set_particle_system(particles);
 }
@@ -18,7 +18,7 @@ SPHSystemSolver2T<T>::~SPHSystemSolver2T() {}
 
 template <typename T>
 void SPHSystemSolver2T<T>::on_update(double delta){
-    ParticleSystemSolver2D<T>::on_update(delta);
+    ParticleSystemSolver<cato::Vec2T<T>>::on_update(delta);
     // std::cout << "Particle 0 pos = (" 
     //           << this->_particle_system->get_position(0).x << ", " 
     //           << this->_particle_system->get_position(0).y << ")\n";
@@ -45,7 +45,7 @@ void SPHSystemSolver2T<T>::on_begin_advance_timestep(double time_step_sec) {
     const double cell_size = particles->radius() * 2.0;
     const int resolution_x = static_cast<int>(800.0 / cell_size) + 1;
     const int resolution_y = static_cast<int>(600.0 / cell_size) + 1;
-    particles->build_neighbor_lookup(resolution_x, resolution_y, cell_size, _predicted_positions);
+    particles->build_neighbor_lookup(cato::Vec2i(resolution_x, resolution_y), cell_size, _predicted_positions);
     particles->find_each_neighbor();
     
     particles->update_densities(_predicted_positions);
@@ -64,7 +64,7 @@ void SPHSystemSolver2T<T>::accumulate_forces() {
 
 template <typename T>
 void SPHSystemSolver2T<T>::accumulate_non_pressure_forces() {
-    ParticleSystemSolver2D<T>::accumulate_forces();
+    ParticleSystemSolver<cato::Vec2T<T>>::accumulate_forces();
     accumulate_viscosity_forces();
 }
 

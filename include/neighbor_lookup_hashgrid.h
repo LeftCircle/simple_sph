@@ -35,7 +35,7 @@ public:
 
 private:
     double _cellSize;
-    cato::Vec3i _resolution = cato::Vec3i{1, 1, 1};
+    cato::Vec3i _resolution = cato::Vec3i(1);
     // a copy of the input points
     std::vector<cato::Vec3T<T>> _points;
     // A vector of buckets that contains a list of all point indices in that bucket

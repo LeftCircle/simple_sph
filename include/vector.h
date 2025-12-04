@@ -7,11 +7,12 @@ namespace cato{
 
 template<typename T>
 struct Vec2T{
+	using value_type = T;
 	T x, y;
 
 	Vec2T() : x(0), y(0) {}
 	Vec2T(T x, T y) : x(x), y(y) {};
-
+	Vec2T(T v) : x(v), y(v) {};
 	T magnitude() const {
 		return sqrt(x * x + y * y);
 	}
@@ -57,6 +58,17 @@ struct Vec2T{
 		return Vec2T{ static_cast<T>(x * s), static_cast<T>(y * s) };
 	}
 
+	Vec2T operator*(const Vec2T& v) const {
+		return Vec2T{ x * v.x, y * v.y };
+	}
+
+	template<typename U>
+	Vec2T& operator*=(U s) {
+		x = static_cast<T>(x * s);
+		y = static_cast<T>(y * s);
+		return *this;
+	}
+
 	template<typename U>
 	Vec2T operator/(U s) const {
 		return Vec2T{ static_cast<T>(x / s), static_cast<T>(y / s) };
@@ -68,15 +80,16 @@ struct Vec2T{
 		y = static_cast<T>(y / s);
 		return *this;
 	}
-
 };
 
 template<typename T>
 struct Vec3T{
+	using value_type = T;
 	T x, y, z;
 
 	Vec3T(T x, T y, T z) : x(x), y(y), z(z) {};
 	Vec3T() : x(0), y(0), z(0) {};
+	Vec3T(T v) : x(v), y(v), z(v) {};
 
 	T magnitude() const {
 		return std::sqrt(x * x + y * y + z * z);
@@ -130,9 +143,29 @@ struct Vec3T{
 		return Vec3T{ static_cast<T>(x * s), static_cast<T>(y * s), static_cast<T>(z * s) };
 	}
 
+	Vec3T operator*(const Vec3T& v) const {
+		return Vec3T{ x * v.x, y * v.y, z * v.z };
+	}
+
+	template<typename U>
+	Vec3T& operator*=(U s) {
+		x = static_cast<T>(x * s);
+		y = static_cast<T>(y * s);
+		z = static_cast<T>(z * s);
+		return *this;
+	}
+
 	template<typename U>
 	Vec3T operator/(U s) const {
 		return Vec3T{ static_cast<T>(x / s), static_cast<T>(y / s), static_cast<T>(z / s) };
+	}
+
+	template<typename U>
+	Vec3T& operator/=(U s) {
+		x = static_cast<T>(x / s);
+		y = static_cast<T>(y / s);
+		z = static_cast<T>(z / s);
+		return *this;
 	}
 
 };

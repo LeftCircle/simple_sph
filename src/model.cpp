@@ -64,9 +64,9 @@ void Model::on_up_arrow_pressed() {
     double new_radius = old_radius * 1.1;
     sph_data->set_radius(new_radius);
     sph_data->build_neighbor_lookup(
-        static_cast<int>(800.0 / (new_radius * 2.0)) + 1,
-        static_cast<int>(600.0 / (new_radius * 2.0)) + 1,
-        new_radius * 2.0,
+        cato::Vec2i(static_cast<int>(800.0 / (new_radius * 2.0)) + 1,
+					static_cast<int>(600.0 / (new_radius * 2.0)) + 1),
+		new_radius * 2.0,
         sph_data->get_positions()
     );
     sph_data->find_each_neighbor();

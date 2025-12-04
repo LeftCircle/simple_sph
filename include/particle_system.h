@@ -11,27 +11,36 @@
 
 #include "vector.h"
 #include "neighbor_lookup_hashgrid2D.h"
+#include "neighbor_lookup_hashgrid.h"
 
-template<typename T>
-class ParticleSystem2D {
+template<typename VecType>
+class ParticleSystem {
 public:
-	ParticleSystem2D();
-	ParticleSystem2D(size_t n_particles);
-	~ParticleSystem2D();
+	using T = decltype(VecType().x);
+	using IntVec = std::conditional_t<std::is_same<VecType, cato::Vec2T<T>>::value, cato::Vec2i, cato::Vec3i>;
+	using NeighborLookup = std::conditional_t<
+		std::is_same<VecType, cato::Vec2T<T>>::value,
+		PointNeighborLookupHashGrid2<T>,
+		PointNeighborLookupHashGrid3<T>
+	>;
+
+	ParticleSystem();
+	ParticleSystem(size_t n_particles);
+	~ParticleSystem();
 	
 	size_t n_particles() const;
 	void clear_particles();
+	
 	// TO DO -> pack all of the appropriate data into one array
 	// so that we don't need a resize function for each inherited class
 	virtual void resize(const size_t n);
 	
-	void randomize_particles(const T x_min, const T x_max,
-		const T y_min, const T y_max);
+	void randomize_particles(const VecType& blc, const VecType& trc);
 	
 	void organize_particles_in_grid(
-		const cato::Vec2i& origin,
-		const cato::Vec2i& spacing,
-		const cato::Vec2i& resolution
+		const IntVec& origin,
+		const IntVec& spacing,
+		const IntVec& resolution
 	);
 
 	T radius() const;
@@ -39,27 +48,27 @@ public:
 
 	T mass() const;
 	void set_mass(const T m);
-	const cato::Vec2T<T>& get_position(int particle_n) const { return _positions[particle_n]; };
-	cato::Vec2T<T>& get_position(int particle_n) { return _positions[particle_n]; };
+	const VecType& get_position(int particle_n) const { return _positions[particle_n]; };
+	VecType& get_position(int particle_n) { return _positions[particle_n]; };
 	
-	void set_particle_position(int particle_n, const cato::Vec2T<T>& position) {
+	void set_particle_position(int particle_n, const VecType& position) {
 		_positions[particle_n] = position;
 	}
 	
-	const cato::Vec2T<T>& get_velocity(int particle_n) const { return _velocities[particle_n]; };
-	cato::Vec2T<T>& get_velocity(int particle_n) { return _velocities[particle_n]; };
+	const VecType& get_velocity(int particle_n) const { return _velocities[particle_n]; };
+	VecType& get_velocity(int particle_n) { return _velocities[particle_n]; };
 	
-	const cato::Vec2T<T>& get_force(int particle_n) const { return _forces[particle_n]; };
-	cato::Vec2T<T>& get_force(int particle_n) { return _forces[particle_n]; };
+	const VecType& get_force(int particle_n) const { return _forces[particle_n]; };
+	VecType& get_force(int particle_n) { return _forces[particle_n]; };
 
-	std::vector<cato::Vec2T<T>>& get_positions() { return _positions; }
-	const std::vector<cato::Vec2T<T>>& get_positions() const { return _positions; }
+	std::vector<VecType>& get_positions() { return _positions; }
+	const std::vector<VecType>& get_positions() const { return _positions; }
 	
-	std::vector<cato::Vec2T<T>>& get_velocities() { return _velocities; }
-	const std::vector<cato::Vec2T<T>>& get_velocities() const { return _velocities; }
+	std::vector<VecType>& get_velocities() { return _velocities; }
+	const std::vector<VecType>& get_velocities() const { return _velocities; }
 	
-	std::vector<cato::Vec2T<T>>& get_forces() { return _forces; }
-	const std::vector<cato::Vec2T<T>>& get_forces() const { return _forces; }
+	std::vector<VecType>& get_forces() { return _forces; }
+	const std::vector<VecType>& get_forces() const { return _forces; }
 	
 	const std::vector<size_t>& get_neighbors(size_t particle_n) const {
 		return _neighbor_indices[particle_n];
@@ -67,17 +76,15 @@ public:
 
 	void clear_velocities() {
 		for (size_t i = 0; i < _n_particles; ++i) {
-			_velocities[i].x = static_cast<T>(0);
-			_velocities[i].y = static_cast<T>(0);
+			_velocities[i] *= static_cast<T>(0);
 		}
 	}
 
 	// Neighbor lookup structures
 	void build_neighbor_lookup(
-		int resolution_x,
-		int resolution_y,
+		const IntVec& resolution,
 		double cell_size,
-		const std::vector<cato::Vec2T<T>>& positions
+		const std::vector<VecType>& positions
 	);
 	void find_each_neighbor();
 
@@ -88,16 +95,16 @@ protected:
 	T _mass = static_cast<T>(1.0);
 
 	// Basic vectors containing the x,y positions, velocities, and forces
-	std::vector<cato::Vec2T<T>> _positions;
-	std::vector<cato::Vec2T<T>> _velocities;
-	std::vector<cato::Vec2T<T>> _forces;
+	std::vector<VecType> _positions;
+	std::vector<VecType> _velocities;
+	std::vector<VecType> _forces;
 	// Neighbor lookup structure
-	std::shared_ptr<PointNeighborLookupHashGrid2<T>> _neighbor_lookup;
+	std::shared_ptr<NeighborLookup> _neighbor_lookup;
 	std::vector<std::vector<size_t>> _neighbor_indices;
 
 };
 
-template<typename T>
-using ParticleSystem2DPtr = std::shared_ptr<ParticleSystem2D<T>>;
+template<typename VecType>
+using ParticleSystemPtr = std::shared_ptr<ParticleSystem<VecType>>;
 
 #endif // PARTICLE_SYSTEM_ANIMATION_H
