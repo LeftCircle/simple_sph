@@ -26,11 +26,17 @@ public:
     
     ~Box() {};
 
+    void draw() const override;
+
 private:
     VecType _dimensions;
-
 };
 
+
+using Box2D = Box<cato::Vec2T<float>>;
+using Box3D = Box<cato::Vec3T<float>>;
+using Box2Dd = Box<cato::Vec2T<double>>;
+using Box3Dd = Box<cato::Vec3T<double>>;
 
 
 
