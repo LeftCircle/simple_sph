@@ -58,35 +58,6 @@ struct Mat4CT {
         return m[index];
     }
 
-    // From https://github.com/LeftCircle/TeapotRender/blob/main/include/cyCodeBase/cyMatrix.h
-    void set_view(const cato::Vec3T<T>& pos, const cato::Vec3T<T>& target, const cato::Vec3T<T>& up) {
-        cato::Vec3T<T> zaxis = (target - pos).normalized();
-        cato::Vec3T<T> xaxis = (up.cross(zaxis)).normalized();
-        cato::Vec3T<T> yaxis = zaxis.cross(xaxis);
-
-        m[0] = xaxis.x;    m[4] = yaxis.x;    m[8]  = -zaxis.x;   m[12] = static_cast<T>(0);
-        m[1] = xaxis.y;    m[5] = yaxis.y;    m[9]  = -zaxis.y;   m[13] = static_cast<T>(0);
-        m[2] = xaxis.z;    m[6] = yaxis.z;    m[10] = -zaxis.z;   m[14] = static_cast<T>(0);
-        //m[3] = static_cast<T>(0);    m[7] = static_cast<T>(0);    m[11] = static_cast<T>(0);   m[15] = static_cast<T>(1);
-        // For some reason CY codebase has the following:
-        m[3] = -xaxis.dot(pos);    m[7] = -yaxis.dot(pos);    m[11] = -zaxis.dot(pos);   m[15] = static_cast<T>(1);
-    }
-
-    void perspective(T fov_radians, T aspect, T znear, T zfar) {
-        float fov_rad = fovy * ONE_DEGREE_IN_RADIANS;
-        float range = tan (fov_rad / 2.0f) * near;
-        float sx = (2.0f * near) / (range * aspect + range * aspect);
-        float sy = near / range;
-        float sz = -(far + near) / (far - near);
-        float pz = -(2.0f * far * near) / (far - near);
-        clear();
-        [0] = sx;
-        [5] = sy;
-        [10] = sz;
-        [14] = pz;
-        [11] = -1.0f;
-    }
-
 };
 
 using Mat4f = Mat4CT<float>;

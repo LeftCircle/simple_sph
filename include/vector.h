@@ -37,6 +37,10 @@ struct Vec2T{
 		return x * v.x + y * v.y;
 	}
 
+	T cross(const Vec2T& v) const {
+		return x * v.y - y * v.x;
+	}
+
 	Vec2T operator+(const Vec2T& v) const {
 		return Vec2T{ x + v.x, y + v.y };
 	}
@@ -105,6 +109,14 @@ struct Vec3T{
 
 	T dot(const Vec3T& v) const {
 		return x * v.x + y * v.y + z * v.z;
+	}
+
+	Vec3T cross(const Vec3T& v) const {
+		return Vec3T{
+			y * v.z - z * v.y,
+			z * v.x - x * v.z,
+			x * v.y - y * v.x
+		};
 	}
 
 	T distance_to(const Vec3T& v) const {

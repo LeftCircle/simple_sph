@@ -29,7 +29,7 @@ public:
 private:
     VecType _dimensions;
 
-}
+};
 
 
 
