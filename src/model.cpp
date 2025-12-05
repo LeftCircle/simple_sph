@@ -88,6 +88,7 @@ void Model::on_up_arrow_pressed() {
     double old_radius = sph_data->radius();
     double new_radius = old_radius * 1.1;
     sph_data->set_radius(new_radius);
+    std::cout << "Increased particle radius from " << old_radius << " to " << new_radius << "\n";
     // // 2D case
     // sph_data->build_neighbor_lookup(
     //     cato::Vec2i(static_cast<int>(800.0 / (new_radius * 2.0)) + 1,
@@ -98,11 +99,11 @@ void Model::on_up_arrow_pressed() {
 
     // 3D case
     
-    sph_data->find_each_neighbor();
-    sph_data->update_densities(sph_data->get_positions());
+    //sph_data->find_each_neighbor();
+    //sph_data->update_densities(sph_data->get_positions());
     //double density = sph_visualization->get_special_particle_density();
     //std::cout << "Increased radius to " << new_radius << ", special particle density = " << density << "\n";
-    std::cout << " Radius not yet implemented for 3D visualization.\n";
+    //std::cout << " Radius not yet implemented for 3D visualization.\n";
 }
 
 void Model::on_down_arrow_pressed() {

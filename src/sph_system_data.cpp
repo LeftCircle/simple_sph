@@ -42,6 +42,9 @@ void SPHSystemData<VecType>::update_densities(const std::vector<VecType>& positi
         density += this->_mass * kernel(0);
         d[i] = density;
     }
+
+    // print out particle 0 density for debugging
+    std::cout << "Particle 0 density: " << d[0] << std::endl;
 }
 
 template<typename VecType>

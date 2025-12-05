@@ -30,6 +30,7 @@ public:
 	void reshape( int w, int h );
 	void idle();
 	void main_loop();
+	Camera camera;
 
 private:
 	
@@ -38,7 +39,6 @@ private:
 	View();
 	View( const View& );
 	View& operator= (const View&);
-	Camera camera;
 	void _init_camera();
 
 	

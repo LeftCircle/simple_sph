@@ -115,8 +115,8 @@ void Controller::keyboard( unsigned char key, int x, int y )
 
 			particle_system->organize_particles_in_grid(
 				cato::Vec3i(0, 0, 0),
-				cato::Vec3i(10, 10, 10),
-				cato::Vec3i(20, 20, 20)
+				cato::Vec3i(5, 5, 5),
+				cato::Vec3i(30, 40, 30)
 			);
 			particle_system->clear_velocities();
 			std::cout << "Reset particle positions\n";
@@ -156,23 +156,33 @@ void Controller::keyboard( unsigned char key, int x, int y )
 
 void Controller::special_keys(int key, int x, int y){
 	Model* model = Model::instance();
+	View* view = View::instance();
 	switch (key){
-		case GLUT_KEY_UP:
+		case GLUT_KEY_UP:{
 			std::cout << "Up arrow pressed" << std::endl;
+			// Move the camera up
+			//view->camera.position.y += 100.0f;
 			model->on_up_arrow_pressed();
 			break;
-		case GLUT_KEY_DOWN:
+		}
+		case GLUT_KEY_DOWN:{
 			std::cout << "Down arrow pressed" << std::endl;
+			//view->camera.position.y -= 100.0f;
 			model->on_down_arrow_pressed();
 			break;
-		case GLUT_KEY_RIGHT:
+		}
+		case GLUT_KEY_RIGHT:{
 			std::cout << "Right arrow pressed" << std::endl;
+			view->camera.position.x += 100.0f;
 			model->on_right_arrow_pressed();
 			break;
-		case GLUT_KEY_LEFT:
+		}
+		case GLUT_KEY_LEFT:{
 			std::cout << "Left arrow pressed" << std::endl;	
+			view->camera.position.x -= 100.0f;
 			model->on_left_arrow_pressed();
 			break;
+		}
 	}
 }
 

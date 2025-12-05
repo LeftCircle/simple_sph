@@ -107,7 +107,7 @@ protected:
 	std::shared_ptr<NeighborLookup> _neighbor_lookup;
 	std::vector<std::vector<size_t>> _neighbor_indices;
 
-	SolidBox3D _particle_model{cato::Vec3f(0), cato::Vec3f(50.0)};
+	SolidBox3D _particle_model{cato::Vec3f(0), cato::Vec3f(10.0)};
 
 
 };

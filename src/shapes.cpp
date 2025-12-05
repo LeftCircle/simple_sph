@@ -34,6 +34,7 @@ void Box<VecType>::bind_verts() {
             static_cast<float>(this->_center.y),
             static_cast<float>(this->_center.z)
         );
+        std::cout << " Binding verts at center: " << center.x << ", " << center.y << ", " << center.z << std::endl;
         // Don't care about normals because wireframe
         cato::Vec3f vertices[24] = {
             // top square
@@ -76,6 +77,10 @@ void Box<VecType>::bind_verts() {
             center + cato::Vec3f{-half_dim.x, -half_dim.y, half_dim.z},
             center + cato::Vec3f{half_dim.x, -half_dim.y, half_dim.z},
         };
+        // print position of each vertex for debugging
+        for (int i = 0; i < 24; ++i) {
+            std::cout << "Vertex " << i << ": (" << vertices[i].x << ", " << vertices[i].y << ", " << vertices[i].z << ")\n";
+        }
         glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (GLvoid*)0);
         glEnableVertexAttribArray(0);

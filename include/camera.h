@@ -43,21 +43,39 @@ public:
         cato::Vec3f xaxis = (up_v.cross(zaxis)).normalized();
         cato::Vec3f yaxis = zaxis.cross(xaxis);
 
-        // view_mat[0] = xaxis.x, view_mat[1] = xaxis.y, view_mat[2] = xaxis.z, view_mat[3] = -pos.x;
-        // view_mat[4] = yaxis.x, view_mat[5] = yaxis.y, view_mat[6] = yaxis.z, view_mat[7] = -pos.y;
-        // view_mat[8] = zaxis.x, view_mat[9] = zaxis.y, view_mat[10] = zaxis.z, view_mat[11] = pos.z;
-        // view_mat[12] = 0.0f, view_mat[13] = 0.0f, view_mat[14] = 0.0f, view_mat[15] = 1.0f;
-        view_mat[0] = xaxis.x, view_mat[4] = xaxis.y, view_mat[8] = xaxis.z, view_mat[12] = -pos.x;
-        view_mat[1] = yaxis.x, view_mat[5] = yaxis.y, view_mat[9] = yaxis.z, view_mat[13] = -pos.y;
+        
+        view_mat[0] = xaxis.x, view_mat[4] = xaxis.y, view_mat[8] =  xaxis.z, view_mat[12] = -pos.x;
+        view_mat[1] = yaxis.x, view_mat[5] = yaxis.y, view_mat[9] =  yaxis.z, view_mat[13] = -pos.y;
         view_mat[2] = zaxis.x, view_mat[6] = zaxis.y, view_mat[10] = zaxis.z, view_mat[14] = -pos.z;
         view_mat[3] = 0.0f, view_mat[7] = 0.0f, view_mat[11] = 0.0f, view_mat[15] = 1.0f;
+
+        // view_mat[0] = xaxis.x, view_mat[4] = yaxis.x, view_mat[8] =  zaxis.x, view_mat[12] = 0.0;
+        // view_mat[1] = xaxis.y, view_mat[5] = yaxis.y, view_mat[9] =  zaxis.y, view_mat[13] = 0.0;
+        // view_mat[2] = xaxis.z, view_mat[6] = yaxis.z, view_mat[10] = zaxis.z, view_mat[14] = 0.0;
+        // view_mat[3] = -pos.x,  view_mat[7] = -pos.y,  view_mat[11] = -pos.z,  view_mat[15] = 1.0f;
+
+        // view_mat[0] = xaxis.x, view_mat[4] = xaxis.y, view_mat[8] =  xaxis.z, view_mat[12] = -pos.dot(xaxis);
+        // view_mat[1] = yaxis.x, view_mat[5] = yaxis.y, view_mat[9] =  yaxis.z, view_mat[13] = -pos.dot(yaxis);
+        // view_mat[2] = zaxis.x, view_mat[6] = zaxis.y, view_mat[10] = zaxis.z, view_mat[14] = -pos.dot(zaxis);
+        // view_mat[3] = 0.0f, view_mat[7] = 0.0f, view_mat[11] = 0.0f, view_mat[15] = 1.0f;
+
+        // view_mat[0] = xaxis.x, view_mat[4] = yaxis.x, view_mat[8] =  zaxis.x, view_mat[12] = -pos.dot(xaxis);
+        // view_mat[1] = xaxis.y, view_mat[5] = yaxis.y, view_mat[9] =  zaxis.y, view_mat[13] = -pos.dot(yaxis);
+        // view_mat[2] = xaxis.z, view_mat[6] = yaxis.z, view_mat[10] = zaxis.z, view_mat[14] = -pos.dot(zaxis);
+        // view_mat[3] = 0.0f, view_mat[7] = 0.0f, view_mat[11] = 0.0f, view_mat[15] = 1.0f;
+
+
+        // view_mat[0] = xaxis.x, view_mat[4] = yaxis.x, view_mat[8] =  zaxis.x, view_mat[12] = 0.0f;
+        // view_mat[1] = xaxis.y, view_mat[5] = yaxis.y, view_mat[9] =  zaxis.y, view_mat[13] = 0.0f;
+        // view_mat[2] = xaxis.z, view_mat[6] = yaxis.z, view_mat[10] = zaxis.z, view_mat[14] = 0.0f;
+        // view_mat[3] = -pos.dot(xaxis), view_mat[7] = -pos.dot(yaxis), view_mat[11] = -pos.dot(zaxis), view_mat[15] = 1.0f;
 
 		_og_up = up_v;
 	}
 
     
-    cato::Vec3f position = cato::Vec3f(150, 500, 1500);
-	cato::Vec3f target = cato::Vec3f(0, 0, 0);
+    cato::Vec3f position = cato::Vec3f(500.0, 0.0, 3000.0);
+	cato::Vec3f target = cato::Vec3f(0.0, 0.0, 0.0);
 	Mat4f view_mat;
 	Mat4f projection_mat;
 	float fov = 35.0f;

@@ -41,7 +41,7 @@ int main(int argc, char** argv) {
 	model->sph_system_solver->sphSystemData()->organize_particles_in_grid(
         cato::Vec3i(0, 0, 0),
         cato::Vec3i(10, 10, 10),
-        cato::Vec3i(20, 20, 20)
+        cato::Vec3i(30, 30, 30)
     );
 	view->init(argc, argv, WINDOW_WIDTH, WINDOW_HEIGHT);
 

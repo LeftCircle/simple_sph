@@ -17,6 +17,7 @@
 #include "vector.h"
 #include "particle_system_solver.h"
 #include "matrix.h"
+#include "color.h"
 
 template <typename VecType>
 class SPHSystemSolver : public ParticleSystemSolver<VecType> {

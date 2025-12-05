@@ -6,7 +6,9 @@
 #include <iostream>
 
 #include "model.h"
+#include "view.h"
 #include "vector.h"
+
 
 // A singleton controller class that will be used to drive GLUT inputs
 class Controller

@@ -284,20 +284,23 @@ void SPHSystemSolver<VecType>::update_graphics(
         glUniformMatrix4fv(view_loc, 1, GL_FALSE, view_matrix.m);
         GLuint projection_loc = glGetUniformLocation(particle_shader, "projection");
         glUniformMatrix4fv(projection_loc, 1, GL_FALSE, projection_matrix.m);
+        GLuint model_loc_a = glGetUniformLocation(particle_shader, "model");
+        GLuint color_loc = glGetUniformLocation(particle_shader, "object_color");
         for (size_t i = 0; i < sphSystemData()->n_particles(); i++) {
             VecType pos = sphSystemData()->get_position(i);
             // Update the model matrix for the particle
-            GLuint model_loc = glGetUniformLocation(particle_shader, "model");
             model_matrix.set_translation(static_cast<float>(pos.x), static_cast<float>(pos.y), static_cast<float>(pos.z));
-            glUniformMatrix4fv(model_loc, 1, GL_FALSE, model_matrix.m);
+            glUniformMatrix4fv(model_loc_a, 1, GL_FALSE, model_matrix.m);
             
+            auto& v = particles->get_velocity(i);
+            double speed = v.magnitude();
+            double max_speed = 100.0; // Define a maximum speed for color mapping
+            double t = std::min(speed / max_speed, 1.0);
+            colorRGB color = lerp_color(BLUE, RED, t);
+            glUniform3f(color_loc, color.r, color.g, color.b);
             
             // Draw the particle
             particles->draw_particle_model();
-
-            
-            //auto v = particles->get_velocity(i);
-           
         }
 
         glUseProgram(0);
@@ -324,6 +327,9 @@ void SPHSystemSolver<VecType>::update_graphics(
         GLuint projection_loc_b = glGetUniformLocation(boundary_shader, "projection");
         glUniformMatrix4fv(projection_loc_b, 1, GL_FALSE, projection_matrix.m);
         
+        GLuint color_loc_b = glGetUniformLocation(boundary_shader, "object_color");
+        glUniform3f(color_loc_b, 1.0f, 1.0f, 1.0f); // White color for boundary box
+
         this->_boundary_box.draw();
         glBindVertexArray(0);
         glUseProgram(0);
