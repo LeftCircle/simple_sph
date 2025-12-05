@@ -40,13 +40,14 @@ void SPHSystemSolver<VecType>::on_begin_advance_timestep(double time_step_sec) {
         
 
     const double cell_size = particles->radius() * 2.0;
-    const int resolution_x = static_cast<int>(800.0 / cell_size) + 1;
-    const int resolution_y = static_cast<int>(600.0 / cell_size) + 1;
+    auto& boundary_dim = this->_boundary_box.get_dimensions();
+    const int resolution_x = static_cast<int>(boundary_dim.x / cell_size) + 1;
+    const int resolution_y = static_cast<int>(boundary_dim.y / cell_size) + 1;
 	if constexpr (std::is_same<VecType, cato::Vec2T<typename VecType::value_type>>::value){
 		particles->build_neighbor_lookup(cato::Vec2i(resolution_x, resolution_y), cell_size, _predicted_positions);
 	}
 	else {
-		const int resolution_z = static_cast<int>(600.0 / cell_size) + 1;
+		const int resolution_z = static_cast<int>(boundary_dim.z / cell_size) + 1;
 		particles->build_neighbor_lookup(cato::Vec3i(resolution_x, resolution_y, resolution_z), cell_size, _predicted_positions);
 	}
     particles->find_each_neighbor();
@@ -245,9 +246,13 @@ void SPHSystemSolver<VecType>::update_graphics() {
 		}
 	} else {
 		std::cout << "Only 2D draw is supported atm" << std::endl;
+        // Draw the box!
+        this->_boundary_box.draw();
 	}
 }
 
 // explicit template instantiation
 template class SPHSystemSolver<cato::Vec2f>;
 template class SPHSystemSolver<cato::Vec2d>;
+template class SPHSystemSolver<cato::Vec3f>;
+template class SPHSystemSolver<cato::Vec3d>;

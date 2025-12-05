@@ -15,7 +15,6 @@
 #include "vector.h"
 #include "particle_system_solver.h"
 
-
 template <typename VecType>
 class SPHSystemSolver : public ParticleSystemSolver<VecType> {
 public:
@@ -24,7 +23,6 @@ public:
 		SphSpikyKernal2<T>,
 		SphSpikyKernal3<T>
 	>;
-
 
 	SPHSystemSolver();
 	SPHSystemSolver(size_t n_particles);
@@ -80,11 +78,10 @@ protected:
 	T negative_pressure_scale = static_cast<T>(0.0);
 	std::vector<VecType> _predicted_positions;
 	std::vector<VecType> _predicted_velocities;
-
 };
 
 using SPHSystemSolver2d = SPHSystemSolver<cato::Vec2d>;
 using SPHSystemSolver2f = SPHSystemSolver<cato::Vec2f>;
-
+using SPHSystemSolver3d = SPHSystemSolver<cato::Vec3d>;
 
 #endif

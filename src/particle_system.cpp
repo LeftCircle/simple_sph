@@ -137,3 +137,5 @@ void ParticleSystem<VecType>::find_each_neighbor() {
 // Explicit template instantiations
 template class ParticleSystem<cato::Vec2f>;
 template class ParticleSystem<cato::Vec2d>;
+template class ParticleSystem<cato::Vec3d>;
+template class ParticleSystem<cato::Vec3f>;

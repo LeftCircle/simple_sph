@@ -35,14 +35,6 @@ struct Mat4CT {
         }
     }
 
-    static Mat4CT identity() {
-        for (int i = 0; i < 16; ++i) {
-            m[i] = static_cast<T>(0);
-        }
-        m[0] = m[5] = m[10] = m[15] = static_cast<T>(1);
-        return *this;
-    }
-
     void clear() {
         for (int i = 0; i < 16; ++i) {
             m[i] = static_cast<T>(0);
@@ -56,6 +48,16 @@ struct Mat4CT {
 
     T& operator[](int index) {
         return m[index];
+    }
+
+
+    static Mat4CT identity() {
+        Mat4CT<T> mat;
+        for (int i = 0; i < 16; ++i) {
+            mat.m[i] = static_cast<T>(0);
+        }
+        mat.m[0] = mat.m[5] = mat.m[10] = mat.m[15] = static_cast<T>(1);
+        return mat;
     }
 
 };

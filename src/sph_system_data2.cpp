@@ -131,4 +131,5 @@ auto SPHSystemData<VecType>::laplacian_at(size_t particle_n,
 // Explicit template instantiations
 template class SPHSystemData<cato::Vec2f>;
 template class SPHSystemData<cato::Vec2d>;
-
+template class SPHSystemData<cato::Vec3f>;
+template class SPHSystemData<cato::Vec3d>;

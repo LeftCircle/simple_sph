@@ -8,6 +8,7 @@
 #include "sph_system_solver.h"
 #include "controller.h"
 #include "model.h"
+#include "camera.h"
 
 class View
 {
@@ -36,7 +37,7 @@ private:
 	View();
 	View( const View& );
 	View& operator= (const View&);
-
+	Camera camera;
 
 	
 	int width, height;

@@ -15,7 +15,10 @@ class Camera
 {
 
 public:
-    Camera() {};
+    Camera() {
+        set_perspective_projection(35.0f, 4.0f / 3.0f, 0.1f, 1000.0f);
+        lookat(position, target, cato::Vec3f(0, 1, 0));
+    };
     ~Camera() {};
 
 	void set_perspective_projection(float new_fov, float aspect, float znear, float zfar)
@@ -33,7 +36,7 @@ public:
         projection_mat[14] = -(2.0f * zfar * znear) / (zfar - znear);
 	}
 
-	void lookat(cato::Vec3f& pos, cato::Vec3f& targ_v, cato::Vec3f& up_v)
+	void lookat(const cato::Vec3f& pos, const cato::Vec3f& targ_v, const cato::Vec3f& up_v)
 	{
 		position = pos, target = targ_v;
 		cato::Vec3f zaxis = (target - pos).normalized();
@@ -49,7 +52,7 @@ public:
 	}
 
     
-    cato::Vec3f position = cato::Vec3f(0, 0, 60);
+    cato::Vec3f position = cato::Vec3f(0, 0, 5);
 	cato::Vec3f target = cato::Vec3f(0, 0, 0);
 	Mat4f view_mat;
 	Mat4f projection_mat;

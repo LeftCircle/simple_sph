@@ -86,7 +86,7 @@ void ParticleSystemSolver<VecType>::integrate(double time_step_sec) {
     #pragma omp parallel for
     for (size_t i = 0; i < n_particles; ++i) {
         // Simple explicit Euler integration
-        cato::Vec2T<T>& new_vel = _new_velocities[i];
+        auto& new_vel = _new_velocities[i];
         new_vel = velocities[i] + time_step_sec * forces[i] / mass;
 
         auto& new_pos = _new_positions[i];
@@ -100,8 +100,8 @@ void ParticleSystemSolver<VecType>::handle_collisions(double time_step_sec) {
 	CollisionHandler::apply_boundary_collisions(
 		_new_positions,
 		_new_velocities,
-		cato::Vec2T<T>(0.0, 0.0),
-		cato::Vec2T<T>(800.0, 600.0),
+		_boundary_box.get_blc(),
+		_boundary_box.get_trc(),
 		0.6
 	);
 }
@@ -163,3 +163,5 @@ void ParticleSystemSolver<VecType>::update_graphics() {
 // explicit type instantiation
 template class ParticleSystemSolver<cato::Vec2d>;
 template class ParticleSystemSolver<cato::Vec2f>;
+template class ParticleSystemSolver<cato::Vec3d>;
+template class ParticleSystemSolver<cato::Vec3f>;
