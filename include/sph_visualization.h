@@ -8,7 +8,7 @@
 
 #include "basic_gl_graphics.h"
 #include "vector.h"
-#include "sph_system_data2.h"
+#include "sph_system_data.h"
 
 class SPHVisualization2D {
 public:

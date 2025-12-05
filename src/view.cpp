@@ -27,6 +27,13 @@ void View::init( int argc, char** argv, int _width, int _height)
 	glutInitWindowSize( width, height );
 	glutCreateWindow( "View" );
 
+	glewExperimental = GL_TRUE;
+    GLenum err = glewInit();
+    if (GLEW_OK != err) {
+        fprintf(stderr, "GLEW Error: %s\n", glewGetErrorString(err));
+        exit(1);
+    }
+
 	glClearColor( 0.0, 0.0, 0.0, 1.0 );
 	glEnable( GL_DEPTH_TEST );
 
@@ -39,14 +46,14 @@ void View::init( int argc, char** argv, int _width, int _height)
 	glutReshapeFunc( [](int w, int h){ View::instance() -> reshape(w,h); } );
 	//glutIdleFunc( [](){ View::instance() -> idle(); } );
 
-	// particle_shader = create_programme_from_files(
-	// 	"shaders/vs.glsl",
-	// 	"shaders/fbasic.glsl"
-	// );
-	// boundary_shader = create_programme_from_files(
-	// 	"shaders/vs.glsl",
-	// 	"shaders/fbasic.glsl"
-	// );
+	particle_shader = create_programme_from_files(
+		"shaders/vs.glsl",
+		"shaders/fbasic.glsl"
+	);
+	boundary_shader = create_programme_from_files(
+		"shaders/vs.glsl",
+		"shaders/fbasic.glsl"
+	);
 
 	glutTimerFunc(16, [](int){ View::instance()->idle(); }, 0);
 }
@@ -58,12 +65,12 @@ void View::display()
 	glLoadIdentity();
 
     //Model::instance()->sph_system_solver->update_graphics();
-	// Model::instance()->sph_system_solver->update_graphics(
-	// 	particle_shader,
-	// 	boundary_shader,
-	// 	camera.view_mat,
-	// 	camera.projection_mat
-	// );
+	Model::instance()->sph_system_solver->update_graphics(
+		particle_shader,
+		boundary_shader,
+		camera.view_mat,
+		camera.projection_mat
+	);
 	// The fun visualization stuff
 	//Model::instance()->sph_visualization->update_graphics();
 	
@@ -73,7 +80,9 @@ void View::display()
 void View::idle()
 {
 	//auto start_time = glutGet(GLUT_ELAPSED_TIME);
+	
 	Model::instance()->simulate();
+	
 	//auto end_time = glutGet(GLUT_ELAPSED_TIME);
 	//std::cout << "Frame time: " << (end_time - start_time) << " ms\n";
 	glutPostRedisplay();

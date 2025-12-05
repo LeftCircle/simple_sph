@@ -1,5 +1,5 @@
-#ifndef SPH_SYSTEM_DATA2_H
-#define SPH_SYSTEM_DATA2_H
+#ifndef SPH_SYSTEM_DATA_H
+#define SPH_SYSTEM_DATA_H
 
 #include <vector>
 #include <iostream>
@@ -62,6 +62,10 @@ private:
 
 using SPHSystemDatad = SPHSystemData<cato::Vec2d>;
 using SPHSystemDataf = SPHSystemData<cato::Vec2f>;
+
+using SPHSystemData3d = SPHSystemData<cato::Vec3d>;
+using SPHSystemData3f = SPHSystemData<cato::Vec3f>;
+
 
 
 #endif

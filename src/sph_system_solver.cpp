@@ -231,7 +231,8 @@ void SPHSystemSolver<VecType>::update_graphics() {
     T r = sphSystemData()->radius() / static_cast<T>(10);
     auto particles = sphSystemData();
     if constexpr (std::is_same<VecType, cato::Vec2T<typename VecType::value_type>>::value){
-		for (size_t i = 0; i < sphSystemData()->n_particles(); ++i) {
+		size_t n_particles = sphSystemData()->n_particles();
+        for (size_t i = 0; i < n_particles; i++) {
 			VecType pos = sphSystemData()->get_position(i);
 			//draw_solid_circle(pos.x, pos.y, sphSystemData()->radius() / static_cast<T>(10));
 			//draw_circle(pos.x, pos.y, sphSystemData()->radius());

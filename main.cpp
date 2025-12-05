@@ -28,20 +28,20 @@ int main(int argc, char** argv) {
 	int num_particles = std::atoi(argv[1]);
 
 	
-	Model* model = create_model();
 	View* view = create_view();
 	Controller* controller = create_controller();
-
+	
+	Model* model = create_model();
+	
 	model->sph_system_solver->sphSystemData()->set_radius(50.0);
 	model->sph_system_solver->sphSystemData()->resize(num_particles);
 	//model->sph_system_solver->sphSystemData()->randomize_particles(50.0, 750.0, 50.0, 550.0);
 	//model->sph_system_solver->sphSystemData()->set_particle_position(0, cato::Vec2d(400.0, 300.0));
-	// model->sph_system_solver->sphSystemData()->organize_particles_in_grid(
-	// 	cato::Vec2i(400, 300),
-	// 	cato::Vec2i(10, 10),
-	// 	cato::Vec2i(30, 30)
-	// );
-
+	model->sph_system_solver->sphSystemData()->organize_particles_in_grid(
+		cato::Vec2i(400, 300),
+		cato::Vec2i(10, 10),
+		cato::Vec2i(30, 30)
+	);
 
 	// model->sph_visualization->organize_particles_in_grid(
 	// 	cato::Vec2i(400, 300),

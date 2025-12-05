@@ -18,6 +18,7 @@
 #include <stdarg.h> // used by log functions to have variable number of args
 #include <GL/glew.h> // include GLEW and new version of GL on Windows
 #include <GLFW/glfw3.h> // GLFW helper library
+#include <iostream>
 
 /*------------------------------GLOBAL VARIABLES------------------------------*/
 // extern int g_gl_width;

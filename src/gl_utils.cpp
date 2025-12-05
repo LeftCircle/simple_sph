@@ -229,8 +229,10 @@ bool create_shader (const char* file_name, GLuint* shader, GLenum type) {
 	if (GL_TRUE != params) {
 		gl_log_err ("ERROR: GL shader index %i did not compile\n", *shader);
 		print_shader_info_log (*shader);
+		std::cout << "Failed to compile shader: " << file_name << std::endl;
 		return false; // or exit or something
 	}
+	std::cout << "Successfully compiled shader: " << file_name << std::endl;
 	gl_log ("shader compiled. index %i\n", *shader);
 	return true;
 }
@@ -293,6 +295,8 @@ GLuint create_programme_from_files (
 	assert (create_shader (vert_file_name, &vert, GL_VERTEX_SHADER));
 	assert (create_shader (frag_file_name, &frag, GL_FRAGMENT_SHADER));
 	assert (create_programme (vert, frag, &programme));
+	std::cout << "Successfully created shader programme from files: "
+	          << vert_file_name << " and " << frag_file_name << std::endl;
 	return programme;
 }
 

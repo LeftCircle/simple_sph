@@ -1,5 +1,5 @@
 CXX = g++
-CXXFLAGS = -std=c++17 -Wall -Iinclude -g -fopenmp
+CXXFLAGS = -std=c++17 -Iinclude -g -fopenmp
 LDFLAGS = -no-pie -lGLEW -lGL -lGLU -lglut -fopenmp -lGL -lX11 -lXxf86vm -lXrandr -lpthread -lXi
 
 SRC = $(wildcard src/*.cpp)

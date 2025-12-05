@@ -13,7 +13,7 @@
 #include <iostream>
 
 #include "sph_kernel.h"
-#include "sph_system_data2.h"
+#include "sph_system_data.h"
 #include "vector.h"
 #include "particle_system_solver.h"
 #include "matrix.h"

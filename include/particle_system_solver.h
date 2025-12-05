@@ -31,7 +31,7 @@ public:
     T get_gravity() const { return _gravity; }
     void set_gravity(T g) { _gravity = g; }
     void add_interaction_force(const VecType& position, T radius, T strength, T direction = static_cast<T>(1));
-    void set_boundary_box(const BoxBounds& box) { _boundary_box = box; _boundary_box.bind_verts(); }
+    void set_boundary_box(const BoxBounds& box) { _boundary_box = box; }
     
 protected:
     // Protected constructor for derived classes to set the particle type
