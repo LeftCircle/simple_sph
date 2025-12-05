@@ -10,6 +10,7 @@ uniform mat4 view;
 uniform mat4 projection;
 
 out vec3 normal_cam, pos_cam;
+out vec3 vertexColor;
 
 void main()
 {
@@ -17,5 +18,6 @@ void main()
     pos_cam = vec3 (view * model * vec4 (position, 1.0)); 
     gl_Position = projection * view_position;
     normal_cam = normalize(vec3 (view * model * vec4(normal, 0.0)));
+    vertexColor = vec3(1.0, 0.0, 0.0);
 }
 

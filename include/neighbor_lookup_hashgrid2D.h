@@ -18,7 +18,7 @@ public:
     PointNeighborLookupHashGrid2(int resolutionX, int resolutionY, double cellSize)
         : _resolution(cato::Vec2i{resolutionX, resolutionY}), _cellSize(cellSize) {}
     
-    void build(const std::vector<cato::Vec2T<T>>& points) override;
+    void build(const std::vector<cato::Vec2T<T>>& points, const cato::Vec2T<T>& blc) override;
 
     void for_each_nearby_point(
         const cato::Vec2T<T>& origin,

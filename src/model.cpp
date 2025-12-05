@@ -3,22 +3,31 @@
 Model* Model::pModel = nullptr;
 
 Model::Model() {
-    sph_system_solver = std::make_unique<SPHSystemSolver2d>();
-    std::cout << "Model created with SPHSystemSolver2d and SPHVisualization2D.\n";
-    sph_visualization =  std::make_unique<SPHVisualization2D>();
+    sph_system_solver = std::make_unique<SPHSystemSolver3d>();
+    //sph_visualization =  std::make_unique<SPHVisualization2D>();
 
-    // sph_system_solver->set_boundary_box(
-    //     Box<cato::Vec3d>(
-    //         cato::Vec3d(0.0, 0.0, 0.0),
-    //         cato::Vec3d(800.0, 600.0, 400.0)
-    //     )
-    // );
+    // 3D case
     sph_system_solver->set_boundary_box(
-        Box<cato::Vec2d>(
-            cato::Vec2d(400, 300),
-            cato::Vec2d(800.0, 600.0)
+        Box<cato::Vec3d>(
+            cato::Vec3d(0.0, 0.0, 0.0),
+            cato::Vec3d(800.0, 600.0, 400.0)
         )
     );
+
+    
+    // // 2D case
+    // sph_system_solver->set_boundary_box(
+    //     Box<cato::Vec2d>(
+    //         cato::Vec2d(400, 300),
+    //         cato::Vec2d(800.0, 600.0)
+    //     )
+    // );
+
+    // sph_system_solver->sphSystemData()->organize_particles_in_grid(
+	// 	cato::Vec2i(400, 300),
+	// 	cato::Vec2i(10, 10),
+	// 	cato::Vec2i(30, 30)
+	// );
 }
 
 Model::~Model() {}
@@ -91,7 +100,7 @@ void Model::on_up_arrow_pressed() {
     
     sph_data->find_each_neighbor();
     sph_data->update_densities(sph_data->get_positions());
-    double density = sph_visualization->get_special_particle_density();
+    //double density = sph_visualization->get_special_particle_density();
     //std::cout << "Increased radius to " << new_radius << ", special particle density = " << density << "\n";
     std::cout << " Radius not yet implemented for 3D visualization.\n";
 }

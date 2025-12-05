@@ -28,19 +28,56 @@ void Box<VecType>::bind_verts() {
         // Do nothing. We are using legacy OpenGL immediate mode for 2D boxes.
     } else if constexpr (std::is_same<VecType, cato::Vec3T<typename VecType::value_type>>::value){
         // Bind 3D box vertices (not implemented)
-        VecType halfDim = _dimensions / static_cast<typename VecType::value_type>(2);
-        VecType vertices[8] = {
-            this->_center + VecType{-halfDim.x, -halfDim.y, -halfDim.z},
-            this->_center + VecType{ halfDim.x, -halfDim.y, -halfDim.z},
-            this->_center + VecType{ halfDim.x,  halfDim.y, -halfDim.z},
-            this->_center + VecType{-halfDim.x,  halfDim.y, -halfDim.z},
-            this->_center + VecType{-halfDim.x, -halfDim.y,  halfDim.z},
-            this->_center + VecType{ halfDim.x, -halfDim.y,  halfDim.z},
-            this->_center + VecType{ halfDim.x,  halfDim.y,  halfDim.z},
-            this->_center + VecType{-halfDim.x,  halfDim.y,  halfDim.z}
+        VecType half_dim = _dimensions / static_cast<typename VecType::value_type>(2);
+        cato::Vec3f center(
+            static_cast<float>(this->_center.x),
+            static_cast<float>(this->_center.y),
+            static_cast<float>(this->_center.z)
+        );
+        // Don't care about normals because wireframe
+        cato::Vec3f vertices[24] = {
+            // top square
+            center + cato::Vec3f(half_dim.x, half_dim.y, half_dim.z),
+            center + cato::Vec3f{half_dim.x, half_dim.y, -half_dim.z},
+            // Repeat because just drawing lines
+            center + cato::Vec3f{half_dim.x, half_dim.y, -half_dim.z},
+            center + cato::Vec3f{-half_dim.x, half_dim.y, -half_dim.z},
+            
+            center + cato::Vec3f{-half_dim.x, half_dim.y, -half_dim.z},
+            center + cato::Vec3f{-half_dim.x, half_dim.y, half_dim.z},
+
+            // Close top
+            center + cato::Vec3f{-half_dim.x, half_dim.y, half_dim.z},
+            center + cato::Vec3f{half_dim.x, half_dim.y, half_dim.z},
+
+            // Draw the sides
+            center + cato::Vec3f{half_dim.x, half_dim.y, half_dim.z},
+            center + cato::Vec3f{half_dim.x, -half_dim.y, half_dim.z},
+
+            center + cato::Vec3f{half_dim.x, half_dim.y, -half_dim.z},
+            center + cato::Vec3f{half_dim.x, -half_dim.y, -half_dim.z},
+
+            center + cato::Vec3f{-half_dim.x, half_dim.y, -half_dim.z},
+            center + cato::Vec3f{-half_dim.x, -half_dim.y, -half_dim.z},
+
+            center + cato::Vec3f{-half_dim.x, half_dim.y, half_dim.z},
+            center + cato::Vec3f{-half_dim.x, -half_dim.y, half_dim.z},
+
+            // Now bottom face
+            center + cato::Vec3f{half_dim.x, -half_dim.y, half_dim.z},
+            center + cato::Vec3f{half_dim.x, -half_dim.y, -half_dim.z},
+
+            center + cato::Vec3f{half_dim.x, -half_dim.y, -half_dim.z},
+            center + cato::Vec3f{-half_dim.x, -half_dim.y, -half_dim.z},
+
+            center + cato::Vec3f{-half_dim.x, -half_dim.y, -half_dim.z},
+            center + cato::Vec3f{-half_dim.x, -half_dim.y, half_dim.z},
+
+            center + cato::Vec3f{-half_dim.x, -half_dim.y, half_dim.z},
+            center + cato::Vec3f{half_dim.x, -half_dim.y, half_dim.z},
         };
         glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(typename VecType::value_type), (GLvoid*)0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (GLvoid*)0);
         glEnableVertexAttribArray(0);
     }
 }
@@ -61,7 +98,7 @@ void Box<VecType>::draw() const {
             glVertex2f(bottomLeft.x, bottomLeft.y);
         glEnd();
     } else if constexpr (std::is_same<VecType, cato::Vec3T<typename VecType::value_type>>::value){
-        glDrawArrays(GL_LINE_LOOP, 0, 8);
+        glDrawArrays(GL_LINES, 0, 24);
     }
 }
 
@@ -74,53 +111,114 @@ void SolidBox<VecType>::bind_verts() {
         // Bind 3D solid box vertices
         // This would typically involve defining the vertices for all 6 faces
         VecType halfDim = this->get_dimensions() / static_cast<typename VecType::value_type>(2);
-        VecType vertices[36] = {
+        std::cout << "Binding solid box vertices. Dimensions: " << this->get_dimensions().x << ", " << this->get_dimensions().y << ", " << this->get_dimensions().z << std::endl;
+        cato::Vec3f center(
+            static_cast<float>(this->_center.x),
+            static_cast<float>(this->_center.y),
+            static_cast<float>(this->_center.z)
+        );
+        cato::Vec3f vertices[72] = {
             // Front face
-            this->_center + VecType{-halfDim.x, -halfDim.y,  halfDim.z},
-            this->_center + VecType{ halfDim.x, -halfDim.y,  halfDim.z},
-            this->_center + VecType{ halfDim.x,  halfDim.y,  halfDim.z},
-            this->_center + VecType{-halfDim.x, -halfDim.y,  halfDim.z},
-            this->_center + VecType{ halfDim.x,  halfDim.y,  halfDim.z},
-            this->_center + VecType{-halfDim.x,  halfDim.y,  halfDim.z},
+            center + cato::Vec3f{-halfDim.x, -halfDim.y,  halfDim.z},
+            cato::Vec3f{0, 0, 1},
+            center + cato::Vec3f{ halfDim.x, -halfDim.y,  halfDim.z},
+            cato::Vec3f{0, 0, 1},
+            center + cato::Vec3f{ halfDim.x,  halfDim.y,  halfDim.z},
+            cato::Vec3f{0, 0, 1},
+            
+            center + cato::Vec3f{-halfDim.x, -halfDim.y,  halfDim.z},
+            cato::Vec3f{0, 0, 1},
+            center + cato::Vec3f{ halfDim.x,  halfDim.y,  halfDim.z},
+            cato::Vec3f{0, 0, 1},
+            center + cato::Vec3f{-halfDim.x,  halfDim.y,  halfDim.z},
+            cato::Vec3f{0, 0, 1},
+            
             // Back face
-            this->_center + VecType{-halfDim.x, -halfDim.y, -halfDim.z},
-            this->_center + VecType{-halfDim.x,  halfDim.y, -halfDim.z},
-            this->_center + VecType{ halfDim.x,  halfDim.y, -halfDim.z},
-            this->_center + VecType{-halfDim.x, -halfDim.y, -halfDim.z},
-            this->_center + VecType{ halfDim.x,  halfDim.y, -halfDim.z},
-            this->_center + VecType{ halfDim.x, -halfDim.y, -halfDim.z},
+            center + cato::Vec3f{-halfDim.x, -halfDim.y, -halfDim.z},
+            cato::Vec3f{0, 0, -1},
+            center + cato::Vec3f{-halfDim.x,  halfDim.y, -halfDim.z},
+            cato::Vec3f{0, 0, -1},
+            center + cato::Vec3f{ halfDim.x,  halfDim.y, -halfDim.z},
+            cato::Vec3f{0, 0, -1},
+            
+            center + cato::Vec3f{-halfDim.x, -halfDim.y, -halfDim.z},
+            cato::Vec3f{0, 0, -1},
+            center + cato::Vec3f{ halfDim.x,  halfDim.y, -halfDim.z},
+            cato::Vec3f{0, 0, -1},
+            center + cato::Vec3f{ halfDim.x, -halfDim.y, -halfDim.z},
+            cato::Vec3f{0, 0, -1},
+        
             // Left face
-            this->_center + VecType{-halfDim.x, -halfDim.y, -halfDim.z},
-            this->_center + VecType{-halfDim.x, -halfDim.y,  halfDim.z},
-            this->_center + VecType{-halfDim.x,  halfDim.y,  halfDim.z},
-            this->_center + VecType{-halfDim.x, -halfDim.y, -halfDim.z},
-            this->_center + VecType{-halfDim.x,  halfDim.y,  halfDim.z},
-            this->_center + VecType{-halfDim.x,  halfDim.y, -halfDim.z},
+            center + cato::Vec3f{-halfDim.x, -halfDim.y, -halfDim.z},
+            cato::Vec3f{-1, 0, 0},
+            center + cato::Vec3f{-halfDim.x, -halfDim.y,  halfDim.z},
+            cato::Vec3f{-1, 0, 0},
+            center + cato::Vec3f{-halfDim.x,  halfDim.y,  halfDim.z},
+            cato::Vec3f{-1, 0, 0},
+            
+            center + cato::Vec3f{-halfDim.x, -halfDim.y, -halfDim.z},
+            cato::Vec3f{-1, 0, 0},
+            center + cato::Vec3f{-halfDim.x,  halfDim.y,  halfDim.z},
+            cato::Vec3f{-1, 0, 0},
+            center + cato::Vec3f{-halfDim.x,  halfDim.y, -halfDim.z},
+            cato::Vec3f{-1, 0, 0},
+            
             // Right face
-            this->_center + VecType{ halfDim.x, -halfDim.y, -halfDim.z},
-            this->_center + VecType{ halfDim.x,  halfDim.y, -halfDim.z},
-            this->_center + VecType{ halfDim.x,  halfDim.y,  halfDim.z},
-            this->_center + VecType{ halfDim.x, -halfDim.y, -halfDim.z},
-            this->_center + VecType{ halfDim.x,  halfDim.y,  halfDim.z},
-            this->_center + VecType{ halfDim.x, -halfDim.y,  halfDim.z},
+            center + cato::Vec3f{ halfDim.x, -halfDim.y, -halfDim.z},
+            cato::Vec3f{1, 0, 0},
+            center + cato::Vec3f{ halfDim.x,  halfDim.y, -halfDim.z},
+            cato::Vec3f{1, 0, 0},
+            center + cato::Vec3f{ halfDim.x,  halfDim.y,  halfDim.z},
+            cato::Vec3f{1, 0, 0},
+            
+            center + cato::Vec3f{ halfDim.x, -halfDim.y, -halfDim.z},
+            cato::Vec3f{1, 0, 0},
+            center + cato::Vec3f{ halfDim.x,  halfDim.y,  halfDim.z},
+            cato::Vec3f{1, 0, 0},
+            center + cato::Vec3f{ halfDim.x, -halfDim.y,  halfDim.z},
+            cato::Vec3f{1, 0, 0},
+            
             // Top face
-            this->_center + VecType{-halfDim.x,  halfDim.y, -halfDim.z},
-            this->_center + VecType{-halfDim.x,  halfDim.y, halfDim.z},
-            this->_center + VecType{ halfDim.x,  halfDim.y, halfDim.z},
-            this->_center + VecType{-halfDim.x,  halfDim.y, -halfDim.z},
-            this->_center + VecType{ halfDim.x,  halfDim.y, halfDim.z},
-            this->_center + VecType{ halfDim.x,  halfDim.y, -halfDim.z},
+            center + cato::Vec3f{-halfDim.x,  halfDim.y, -halfDim.z},
+            cato::Vec3f{0, 1, 0},
+            center + cato::Vec3f{-halfDim.x,  halfDim.y, halfDim.z},
+            cato::Vec3f{0, 1, 0},
+            center + cato::Vec3f{ halfDim.x,  halfDim.y, halfDim.z},
+            cato::Vec3f{0, 1, 0},
+            
+            center + cato::Vec3f{-halfDim.x,  halfDim.y, -halfDim.z},
+            cato::Vec3f{0, 1, 0},
+            center + cato::Vec3f{ halfDim.x,  halfDim.y, halfDim.z},
+            cato::Vec3f{0, 1, 0},
+            center + cato::Vec3f{ halfDim.x,  halfDim.y, -halfDim.z},
+            cato::Vec3f{0, 1, 0},
+            
             // Bottom face
-            this->_center + VecType{-halfDim.x, -halfDim.y, -halfDim.z},
-            this->_center + VecType{ halfDim.x, -halfDim.y, -halfDim.z},
-            this->_center + VecType{ halfDim.x, -halfDim.y,  halfDim.z},
-            this->_center + VecType{-halfDim.x, -halfDim.y, -halfDim.z},
-            this->_center + VecType{ halfDim.x, -halfDim.y,  halfDim.z},
-            this->_center + VecType{-halfDim.x, -halfDim.y,  halfDim.z}
+            center + cato::Vec3f{-halfDim.x, -halfDim.y, -halfDim.z},
+            cato::Vec3f{0, -1, 0},
+            center + cato::Vec3f{ halfDim.x, -halfDim.y, -halfDim.z},
+            cato::Vec3f{0, -1, 0},
+            center + cato::Vec3f{ halfDim.x, -halfDim.y,  halfDim.z},
+            cato::Vec3f{0, -1, 0},
+            
+            center + cato::Vec3f{-halfDim.x, -halfDim.y, -halfDim.z},
+            cato::Vec3f{0, -1, 0},
+            center + cato::Vec3f{ halfDim.x, -halfDim.y,  halfDim.z},
+            cato::Vec3f{0, -1, 0},
+            center + cato::Vec3f{-halfDim.x, -halfDim.y,  halfDim.z},
+            cato::Vec3f{0, -1, 0}
         };
+
+        std::cout << "Size of verts " << sizeof(vertices) << std::endl;
         glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(typename VecType::value_type), (GLvoid*)0);
+        // Verts
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(cato::Vec3f::value_type), (GLvoid*)0);
         glEnableVertexAttribArray(0);
+
+        // Normals
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(cato::Vec3f::value_type), (GLvoid*)(3 * sizeof(cato::Vec3f::value_type)));
+        glEnableVertexAttribArray(1);
+
     }
 }
 
@@ -131,6 +229,9 @@ void SolidBox<VecType>::draw() const {
         // Draw solid 2D box
     } else if constexpr (std::is_same<VecType, cato::Vec3T<typename VecType::value_type>>::value){
         glDrawArrays(GL_TRIANGLES, 0, 36);
+
+        //std::cout << "Should be drawing a solid box of size: " << this->get_dimensions().x << ", " << this->get_dimensions().y << ", " << this->get_dimensions().z << std::endl;
+        //std::cout << "At position: " << this->_center.x << ", " << this->_center.y << ", " << this->_center.z << std::endl;
     }
 }
 

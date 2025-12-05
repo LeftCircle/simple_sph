@@ -85,10 +85,12 @@ public:
 	void build_neighbor_lookup(
 		const IntVec& resolution,
 		double cell_size,
-		const std::vector<VecType>& positions
+		const std::vector<VecType>& positions,
+		const VecType& blc
 	);
 	void find_each_neighbor();
 	void bind_vao() const { _particle_model.bind_vao(); }
+	void bind_particle_model_verts() { _particle_model.bind_verts(); }
 	void draw_particle_model() const { _particle_model.draw(); }
 
 	
@@ -105,7 +107,7 @@ protected:
 	std::shared_ptr<NeighborLookup> _neighbor_lookup;
 	std::vector<std::vector<size_t>> _neighbor_indices;
 
-	SolidBox3D _particle_model{cato::Vec3f(0), cato::Vec3f(_radius)};
+	SolidBox3D _particle_model{cato::Vec3f(0), cato::Vec3f(50.0)};
 
 
 };

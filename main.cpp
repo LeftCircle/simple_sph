@@ -34,14 +34,20 @@ int main(int argc, char** argv) {
 	Model* model = create_model();
 	
 	model->sph_system_solver->sphSystemData()->set_radius(50.0);
-	model->sph_system_solver->sphSystemData()->resize(num_particles);
+	//model->sph_system_solver->sphSystemData()->resize(num_particles);
 	//model->sph_system_solver->sphSystemData()->randomize_particles(50.0, 750.0, 50.0, 550.0);
 	//model->sph_system_solver->sphSystemData()->set_particle_position(0, cato::Vec2d(400.0, 300.0));
+	
 	model->sph_system_solver->sphSystemData()->organize_particles_in_grid(
-		cato::Vec2i(400, 300),
-		cato::Vec2i(10, 10),
-		cato::Vec2i(30, 30)
-	);
+        cato::Vec3i(0, 0, 0),
+        cato::Vec3i(10, 10, 10),
+        cato::Vec3i(20, 20, 20)
+    );
+	view->init(argc, argv, WINDOW_WIDTH, WINDOW_HEIGHT);
+
+	model->sph_system_solver->bind_boundary_box_verts();
+	model->sph_system_solver->particleSystem()->bind_particle_model_verts();
+
 
 	// model->sph_visualization->organize_particles_in_grid(
 	// 	cato::Vec2i(400, 300),
@@ -51,7 +57,6 @@ int main(int argc, char** argv) {
 	// model->sph_visualization->sph_data()->set_radius(50.0);
 
 
-	view->init(argc, argv, WINDOW_WIDTH, WINDOW_HEIGHT);
 	view->main_loop();
 
 

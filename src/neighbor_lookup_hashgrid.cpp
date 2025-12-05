@@ -2,7 +2,7 @@
 
 
 template<typename T>
-void PointNeighborLookupHashGrid3<T>::build(const std::vector<cato::Vec3T<T>>& points) {
+void PointNeighborLookupHashGrid3<T>::build(const std::vector<cato::Vec3T<T>>& points, const cato::Vec3T<T>& blc) {
 	_points.clear();
 	_buckets.clear();
 	_points = points;
@@ -11,7 +11,8 @@ void PointNeighborLookupHashGrid3<T>::build(const std::vector<cato::Vec3T<T>>& p
 
 	// Now we have to place each point index into the appropriate bucket
 	for (size_t i = 0; i < points.size(); ++i) {
-		size_t bucket_index = get_hashkey_from_position(points[i]);
+		cato::Vec3T<T> adjusted_position = points[i] - blc;
+		size_t bucket_index = get_hashkey_from_position(adjusted_position);
 		_buckets[bucket_index].push_back(i);
 	}
 }

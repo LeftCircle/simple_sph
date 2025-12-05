@@ -27,6 +27,17 @@ void SPHSystemSolver<VecType>::on_begin_advance_timestep(double time_step_sec) {
 
     auto& p = particles->get_positions();
     auto& v = particles->get_velocities();
+
+    // print out first particle position for debugging
+    // if (particles->n_particles() > 0) {
+    //     const auto& pos = particles->get_position(0);
+    //     std::cout << "First particle position: (" << pos.x << ", " << pos.y;
+    //     if constexpr (std::is_same<VecType, cato::Vec3T<typename VecType::value_type>>::value){
+    //         std::cout << ", " << pos.z;
+    //     }
+    //     std::cout << ")\n";
+    // }
+
     // Let's build the predicted positions and velocities
     size_t n_particles = particles->n_particles();
     _predicted_positions.resize(n_particles);
@@ -44,11 +55,13 @@ void SPHSystemSolver<VecType>::on_begin_advance_timestep(double time_step_sec) {
     const int resolution_x = static_cast<int>(boundary_dim.x / cell_size) + 1;
     const int resolution_y = static_cast<int>(boundary_dim.y / cell_size) + 1;
 	if constexpr (std::is_same<VecType, cato::Vec2T<typename VecType::value_type>>::value){
-		particles->build_neighbor_lookup(cato::Vec2i(resolution_x, resolution_y), cell_size, _predicted_positions);
+        auto blc = this->_boundary_box.get_blc();
+		particles->build_neighbor_lookup(cato::Vec2i(resolution_x, resolution_y), cell_size, _predicted_positions, blc);
 	}
 	else {
 		const int resolution_z = static_cast<int>(boundary_dim.z / cell_size) + 1;
-		particles->build_neighbor_lookup(cato::Vec3i(resolution_x, resolution_y, resolution_z), cell_size, _predicted_positions);
+        auto blc = this->_boundary_box.get_blc();
+		particles->build_neighbor_lookup(cato::Vec3i(resolution_x, resolution_y, resolution_z), cell_size, _predicted_positions, blc);
 	}
     particles->find_each_neighbor();
     
@@ -266,6 +279,7 @@ void SPHSystemSolver<VecType>::update_graphics(
         // Bind the VAO for the particle model
         particles->bind_vao();
         Mat4f model_matrix = Mat4f::identity();
+        
         GLuint view_loc = glGetUniformLocation(particle_shader, "view");
         glUniformMatrix4fv(view_loc, 1, GL_FALSE, view_matrix.m);
         GLuint projection_loc = glGetUniformLocation(particle_shader, "projection");
@@ -286,8 +300,22 @@ void SPHSystemSolver<VecType>::update_graphics(
            
         }
 
+        glUseProgram(0);
+        glBindVertexArray(0);
+
         // Draw the box!
+        // print the size of the bounding box for sanity
+        // std::cout << "Drawing boundary box with dimensions: "
+        //           << this->_boundary_box.get_dimensions().x << ", "
+        //           << this->_boundary_box.get_dimensions().y << ", "
+        //           << this->_boundary_box.get_dimensions().z << std::endl;
+        // std::cout << "and center at: "
+        //           << this->_boundary_box.get_center().x << ", "
+        //           << this->_boundary_box.get_center().y << ", "
+        //           << this->_boundary_box.get_center().z << std::endl;
+
         glUseProgram(boundary_shader);
+        this->_boundary_box.bind_vao();
         model_matrix = Mat4f::identity();
         GLuint model_loc = glGetUniformLocation(boundary_shader, "model");
         glUniformMatrix4fv(model_loc, 1, GL_FALSE, model_matrix.m);
@@ -297,6 +325,7 @@ void SPHSystemSolver<VecType>::update_graphics(
         glUniformMatrix4fv(projection_loc_b, 1, GL_FALSE, projection_matrix.m);
         
         this->_boundary_box.draw();
+        glBindVertexArray(0);
         glUseProgram(0);
     }
 };

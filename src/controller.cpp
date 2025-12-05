@@ -112,6 +112,12 @@ void Controller::keyboard( unsigned char key, int x, int y )
 			// 	cato::Vec2i(10, 10),
 			// 	cato::Vec2i(30, 30)
 			// );
+
+			particle_system->organize_particles_in_grid(
+				cato::Vec3i(0, 0, 0),
+				cato::Vec3i(10, 10, 10),
+				cato::Vec3i(20, 20, 20)
+			);
 			particle_system->clear_velocities();
 			std::cout << "Reset particle positions\n";
 			break;

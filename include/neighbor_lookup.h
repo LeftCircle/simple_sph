@@ -16,7 +16,7 @@ public:
     PointNeighborLookup3() = default;
     virtual ~PointNeighborLookup3() = default;
 
-    virtual void build(const std::vector<cato::Vec3T<T>>& points) = 0;
+    virtual void build(const std::vector<cato::Vec3T<T>>& points, const cato::Vec3T<T>& blc) = 0;
 
     virtual void for_each_nearby_point(
         const cato::Vec3T<T>& origin,

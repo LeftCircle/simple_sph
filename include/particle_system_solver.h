@@ -13,11 +13,7 @@ template <typename VecType>
 class ParticleSystemSolver : public PhysicsAnimation {
 public:
 	using T = decltype(VecType().x);
-    using BoxBounds = std::conditional_t<std::is_same<VecType, cato::Vec2T<T>>::value,
-		Box<VecType>,
-		Box<VecType>
-	>;
-
+    using BoxBounds = Box<VecType>;
 
     ParticleSystemSolver();
     ParticleSystemSolver(size_t n_particles);
@@ -32,6 +28,10 @@ public:
     void set_gravity(T g) { _gravity = g; }
     void add_interaction_force(const VecType& position, T radius, T strength, T direction = static_cast<T>(1));
     void set_boundary_box(const BoxBounds& box) { _boundary_box = box; }
+
+    void bind_boundary_box_verts() {
+        _boundary_box.bind_verts();
+    }
     
 protected:
     // Protected constructor for derived classes to set the particle type

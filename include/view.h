@@ -39,6 +39,7 @@ private:
 	View( const View& );
 	View& operator= (const View&);
 	Camera camera;
+	void _init_camera();
 
 	
 	int width, height;

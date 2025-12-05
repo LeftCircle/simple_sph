@@ -90,7 +90,7 @@ void ParticleSystem<VecType>::organize_particles_in_grid(
 		for (int j = 0; j < resolution.y; ++j) {
 			for (int i = 0; i < resolution.x; ++i) {
 				int index = j * resolution.x + i;
-				cato::Vec2i pos = blc + cato::Vec2i{ i * spacing.x, j * spacing.y };
+				IntVec pos = blc + IntVec{ i * spacing.x, j * spacing.y };
 				set_particle_position(index, VecType{ static_cast<T>(pos.x), static_cast<T>(pos.y) });
 			}
 		}
@@ -101,7 +101,7 @@ void ParticleSystem<VecType>::organize_particles_in_grid(
 			for (int j = 0; j < resolution.y; ++j) {
 				for (int i = 0; i < resolution.x; ++i) {
 					int index = k * resolution.y * resolution.x + j * resolution.x + i;
-					cato::Vec3i pos = blc + cato::Vec3i{ i * spacing.x, j * spacing.y, k * spacing.z };
+					IntVec pos = blc + IntVec{ i * spacing.x, j * spacing.y, k * spacing.z };
 					set_particle_position(index, VecType{ static_cast<T>(pos.x), static_cast<T>(pos.y), static_cast<T>(pos.z) });
 				}
 			}
@@ -113,10 +113,11 @@ template<typename VecType>
 void ParticleSystem<VecType>::build_neighbor_lookup(
 	const IntVec& resolution,
 	double cell_size,
-	const std::vector<VecType>& positions
+	const std::vector<VecType>& positions,
+	const VecType& blc
 ) {
 	_neighbor_lookup = std::make_shared<NeighborLookup>(resolution, cell_size);
-	_neighbor_lookup->build(positions);
+	_neighbor_lookup->build(positions, blc);
 }
 
 template<typename VecType>

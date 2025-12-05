@@ -54,8 +54,16 @@ void View::init( int argc, char** argv, int _width, int _height)
 		"shaders/vs.glsl",
 		"shaders/fbasic.glsl"
 	);
+	_init_camera();
 
 	glutTimerFunc(16, [](int){ View::instance()->idle(); }, 0);
+}
+
+void View::_init_camera()
+{
+	float aspect_ratio = static_cast<float>(width) / static_cast<float>(height);
+	camera.set_perspective_projection(35.0f, aspect_ratio, 0.1f, 10000.0f);
+	camera.lookat(camera.position, camera.target, cato::Vec3f(0, 1, 0));
 }
 
 void View::display()
