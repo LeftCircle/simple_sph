@@ -6,6 +6,8 @@
 // keep the code very modular so it is easier to understand how each piece
 // contributes.
 
+#include <GL/glew.h>
+#include <GL/glut.h>
 #include <memory>
 #include <vector>
 #include <iostream>
@@ -14,6 +16,7 @@
 #include "sph_system_data2.h"
 #include "vector.h"
 #include "particle_system_solver.h"
+#include "matrix.h"
 
 template <typename VecType>
 class SPHSystemSolver : public ParticleSystemSolver<VecType> {
@@ -44,6 +47,7 @@ public:
 	void set_negative_pressure_scale(T s) { negative_pressure_scale = s; }
 
 	void update_graphics() override;
+	void update_graphics(GLuint particle_shader, GLuint boundary_shader, const Mat4f& view_matrix, const Mat4f& projection_matrix);
 
 
 protected:

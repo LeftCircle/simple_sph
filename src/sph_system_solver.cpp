@@ -58,9 +58,6 @@ void SPHSystemSolver<VecType>::on_begin_advance_timestep(double time_step_sec) {
 template <typename VecType>
 void SPHSystemSolver<VecType>::accumulate_forces() {
     accumulate_pressure_forces();
-    auto particles = sphSystemData();
-    auto& f = particles->get_forces();
-
     accumulate_non_pressure_forces();
 }
 
@@ -250,6 +247,58 @@ void SPHSystemSolver<VecType>::update_graphics() {
         this->_boundary_box.draw();
 	}
 }
+
+template <typename VecType>
+void SPHSystemSolver<VecType>::update_graphics(
+    GLuint particle_shader,
+    GLuint boundary_shader,
+    const Mat4f& view_matrix,
+    const Mat4f& projection_matrix
+) {
+    T r = sphSystemData()->radius() / static_cast<T>(10);
+    auto particles = sphSystemData();
+    if constexpr (std::is_same<VecType, cato::Vec2T<typename VecType::value_type>>::value){
+        update_graphics();
+    } else {
+        // Draw the particles
+        glUseProgram(particle_shader);
+        // Bind the VAO for the particle model
+        particles->bind_vao();
+        Mat4f model_matrix = Mat4f::identity();
+        GLuint view_loc = glGetUniformLocation(particle_shader, "view");
+        glUniformMatrix4fv(view_loc, 1, GL_FALSE, view_matrix.m);
+        GLuint projection_loc = glGetUniformLocation(particle_shader, "projection");
+        glUniformMatrix4fv(projection_loc, 1, GL_FALSE, projection_matrix.m);
+        for (size_t i = 0; i < sphSystemData()->n_particles(); i++) {
+            VecType pos = sphSystemData()->get_position(i);
+            // Update the model matrix for the particle
+            GLuint model_loc = glGetUniformLocation(particle_shader, "model");
+            model_matrix.set_translation(static_cast<float>(pos.x), static_cast<float>(pos.y), static_cast<float>(pos.z));
+            glUniformMatrix4fv(model_loc, 1, GL_FALSE, model_matrix.m);
+            
+            
+            // Draw the particle
+            particles->draw_particle_model();
+
+            
+            //auto v = particles->get_velocity(i);
+           
+        }
+
+        // Draw the box!
+        glUseProgram(boundary_shader);
+        model_matrix = Mat4f::identity();
+        GLuint model_loc = glGetUniformLocation(boundary_shader, "model");
+        glUniformMatrix4fv(model_loc, 1, GL_FALSE, model_matrix.m);
+        GLuint view_loc_b = glGetUniformLocation(boundary_shader, "view");
+        glUniformMatrix4fv(view_loc_b, 1, GL_FALSE, view_matrix.m);
+        GLuint projection_loc_b = glGetUniformLocation(boundary_shader, "projection");
+        glUniformMatrix4fv(projection_loc_b, 1, GL_FALSE, projection_matrix.m);
+        
+        this->_boundary_box.draw();
+        glUseProgram(0);
+    }
+};
 
 // explicit template instantiation
 template class SPHSystemSolver<cato::Vec2f>;

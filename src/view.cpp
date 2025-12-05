@@ -39,6 +39,15 @@ void View::init( int argc, char** argv, int _width, int _height)
 	glutReshapeFunc( [](int w, int h){ View::instance() -> reshape(w,h); } );
 	//glutIdleFunc( [](){ View::instance() -> idle(); } );
 
+	// particle_shader = create_programme_from_files(
+	// 	"shaders/vs.glsl",
+	// 	"shaders/fbasic.glsl"
+	// );
+	// boundary_shader = create_programme_from_files(
+	// 	"shaders/vs.glsl",
+	// 	"shaders/fbasic.glsl"
+	// );
+
 	glutTimerFunc(16, [](int){ View::instance()->idle(); }, 0);
 }
 
@@ -48,8 +57,13 @@ void View::display()
 	glMatrixMode( GL_MODELVIEW );
 	glLoadIdentity();
 
-    Model::instance()->sph_system_solver->update_graphics();
-	
+    //Model::instance()->sph_system_solver->update_graphics();
+	// Model::instance()->sph_system_solver->update_graphics(
+	// 	particle_shader,
+	// 	boundary_shader,
+	// 	camera.view_mat,
+	// 	camera.projection_mat
+	// );
 	// The fun visualization stuff
 	//Model::instance()->sph_visualization->update_graphics();
 	

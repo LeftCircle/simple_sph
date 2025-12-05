@@ -5,6 +5,13 @@ Model* Model::pModel = nullptr;
 Model::Model() {
     sph_system_solver = std::make_unique<SPHSystemSolver3d>();
     sph_visualization =  std::make_unique<SPHVisualization2D>();
+
+    sph_system_solver->set_boundary_box(
+        Box<cato::Vec3d>(
+            cato::Vec3d(0.0, 0.0, 0.0),
+            cato::Vec3d(800.0, 600.0, 400.0)
+        )
+    );
 }
 
 Model::~Model() {}

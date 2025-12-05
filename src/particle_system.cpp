@@ -5,12 +5,17 @@
 template<typename VecType>
 ParticleSystem<VecType>::ParticleSystem()
 	: _n_particles(0), _radius(10.0), _mass(1.0) {
+	_particle_model.set_dimensions(cato::Vec3f(_radius));
+	_particle_model.bind_verts();
+	
 }
 
 template<typename VecType>
 ParticleSystem<VecType>::ParticleSystem(size_t n_particles)
 	: _radius(10.0), _mass(1.0) {
 	resize(n_particles);
+	_particle_model.set_dimensions(cato::Vec3f(_radius));
+	_particle_model.bind_verts();
 }
 
 template<typename VecType>
@@ -45,6 +50,7 @@ auto ParticleSystem<VecType>::radius() const -> T {
 template<typename VecType>
 void ParticleSystem<VecType>::set_radius(const T r) {
 	_radius = r;
+	_particle_model.set_dimensions(cato::Vec3f(_radius));
 }
 
 template<typename VecType>

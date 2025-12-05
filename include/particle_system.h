@@ -12,6 +12,7 @@
 #include "vector.h"
 #include "neighbor_lookup_hashgrid2D.h"
 #include "neighbor_lookup_hashgrid.h"
+#include "shapes.h"
 
 template<typename VecType>
 class ParticleSystem {
@@ -87,11 +88,13 @@ public:
 		const std::vector<VecType>& positions
 	);
 	void find_each_neighbor();
+	void bind_vao() const { _particle_model.bind_vao(); }
+	void draw_particle_model() const { _particle_model.draw(); }
 
 	
 protected:
 	size_t _n_particles;
-	T _radius = static_cast<T>(300);
+	T _radius = static_cast<T>(1.0);
 	T _mass = static_cast<T>(1.0);
 
 	// Basic vectors containing the x,y positions, velocities, and forces
@@ -101,6 +104,9 @@ protected:
 	// Neighbor lookup structure
 	std::shared_ptr<NeighborLookup> _neighbor_lookup;
 	std::vector<std::vector<size_t>> _neighbor_indices;
+
+	SolidBox3D _particle_model{cato::Vec3f(0), cato::Vec3f(_radius)};
+
 
 };
 

@@ -82,63 +82,63 @@ bool gl_log_err (const char* message, ...) {
 }
 
 /*--------------------------------GLFW3 and GLEW------------------------------*/
-bool start_gl () {
-	gl_log ("starting GLFW %s", glfwGetVersionString ());
+// bool start_gl () {
+// 	gl_log ("starting GLFW %s", glfwGetVersionString ());
 	
-	glfwSetErrorCallback (glfw_error_callback);
-	if (!glfwInit ()) {
-		fprintf (stderr, "ERROR: could not start GLFW3\n");
-		return false;
-	}
+// 	glfwSetErrorCallback (glfw_error_callback);
+// 	if (!glfwInit ()) {
+// 		fprintf (stderr, "ERROR: could not start GLFW3\n");
+// 		return false;
+// 	}
 
-    /* We must specify 3.2 core if on Apple OS X -- other O/S can specify
-     anything here. I defined 'APPLE' in the makefile for OS X */
-#ifdef APPLE
-    glfwWindowHint (GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint (GLFW_CONTEXT_VERSION_MINOR, 2);
-    glfwWindowHint (GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-    glfwWindowHint (GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-#endif
+//     /* We must specify 3.2 core if on Apple OS X -- other O/S can specify
+//      anything here. I defined 'APPLE' in the makefile for OS X */
+// #ifdef APPLE
+//     glfwWindowHint (GLFW_CONTEXT_VERSION_MAJOR, 3);
+//     glfwWindowHint (GLFW_CONTEXT_VERSION_MINOR, 2);
+//     glfwWindowHint (GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+//     glfwWindowHint (GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+// #endif
     
-	/*GLFWmonitor* mon = glfwGetPrimaryMonitor ();
-	const GLFWvidmode* vmode = glfwGetVideoMode (mon);
-	g_window = glfwCreateWindow (
-		vmode->width, vmode->height, "Extended GL Init", mon, NULL
-	);*/
+// 	/*GLFWmonitor* mon = glfwGetPrimaryMonitor ();
+// 	const GLFWvidmode* vmode = glfwGetVideoMode (mon);
+// 	g_window = glfwCreateWindow (
+// 		vmode->width, vmode->height, "Extended GL Init", mon, NULL
+// 	);*/
 
-	g_window = glfwCreateWindow (
-		g_gl_width, g_gl_height, "Extended Init.", NULL, NULL
-	);
-/* EKP:  Account in viewport / window difference with Retina displays */
-#ifdef APPLE
-	g_gl_width *=2;
-	g_gl_height *=2;
-#endif
-	if (!g_window) {
-		fprintf (stderr, "ERROR: could not open window with GLFW3\n");
-		glfwTerminate();
-		return false;
-	}
-	// glfwSetWindowSizeCallback (g_window, glfw_window_size_callback);
-	glfwSetFramebufferSizeCallback(g_window, glfw_framebuffer_size_callback);
+// 	g_window = glfwCreateWindow (
+// 		g_gl_width, g_gl_height, "Extended Init.", NULL, NULL
+// 	);
+// /* EKP:  Account in viewport / window difference with Retina displays */
+// #ifdef APPLE
+// 	g_gl_width *=2;
+// 	g_gl_height *=2;
+// #endif
+// 	if (!g_window) {
+// 		fprintf (stderr, "ERROR: could not open window with GLFW3\n");
+// 		glfwTerminate();
+// 		return false;
+// 	}
+// 	// glfwSetWindowSizeCallback (g_window, glfw_window_size_callback);
+// 	glfwSetFramebufferSizeCallback(g_window, glfw_framebuffer_size_callback);
 
-	glfwMakeContextCurrent (g_window);
+// 	glfwMakeContextCurrent (g_window);
 	
-	glfwWindowHint (GLFW_SAMPLES, 4);
+// 	glfwWindowHint (GLFW_SAMPLES, 4);
 	
-	// start GLEW extension handler
-	glewExperimental = GL_TRUE;
-	glewInit ();
+// 	// start GLEW extension handler
+// 	glewExperimental = GL_TRUE;
+// 	glewInit ();
 
-	// get version info
-	const GLubyte* renderer = glGetString (GL_RENDERER); // get renderer string
-	const GLubyte* version = glGetString (GL_VERSION); // version as a string
-	printf ("Renderer: %s\n", renderer);
-	printf ("OpenGL version supported %s\n", version);
-	gl_log ("renderer: %s\nversion: %s\n", renderer, version);
+// 	// get version info
+// 	const GLubyte* renderer = glGetString (GL_RENDERER); // get renderer string
+// 	const GLubyte* version = glGetString (GL_VERSION); // version as a string
+// 	printf ("Renderer: %s\n", renderer);
+// 	printf ("OpenGL version supported %s\n", version);
+// 	gl_log ("renderer: %s\nversion: %s\n", renderer, version);
 	
-	return true;
-}
+// 	return true;
+// }
 
 void glfw_error_callback (int error, const char* description) {
 	fputs (description, stderr);

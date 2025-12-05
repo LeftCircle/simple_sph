@@ -9,6 +9,7 @@
 #include "controller.h"
 #include "model.h"
 #include "camera.h"
+#include "gl_utils.h"
 
 class View
 {
@@ -41,6 +42,7 @@ private:
 
 	
 	int width, height;
+	GLuint particle_shader, boundary_shader;
 };
 
 View* create_view();
