@@ -29,11 +29,14 @@ Some good videso of the simulation can be found below:
 
 ### Dependencies
 There weren't any dependencies until I moved to 3D. All I needed was code to compile and link the shaders, so I turned to [the starter code provided here](https://clemson.instructure.com/courses/264860/files?preview=28584625). It's a bit of a mess and I really wouldn't reccommend this, but at the moment it's required to run the sph simulation. You have to take the whole common folder and place it next to the folder for this project. So something like
+
+```
 |-simple-sph_sim
 |    |-bin/include/shaders/src/etc
 |
 |- common
 |    |- include/linuxi386/etc
+```
 
 The make file takes care of the rest. It's an awful hack and only exists so I can compile the shaders. 
 
