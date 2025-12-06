@@ -35,8 +35,8 @@ public:
 	void on_right_arrow_pressed();
 	void on_left_arrow_pressed();
 
-    //std::unique_ptr<SPHSystemSolver2d> sph_system_solver;
-    std::unique_ptr<SPHSystemSolver3d> sph_system_solver;
+    std::unique_ptr<SPHSystemSolver2d> sph_system_solver;
+    //std::unique_ptr<SPHSystemSolver3d> sph_system_solver;
 	//std::unique_ptr<SPHVisualization2D> sph_visualization;
 
 	void simulate();

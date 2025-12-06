@@ -3,31 +3,31 @@
 Model* Model::pModel = nullptr;
 
 Model::Model() {
-    sph_system_solver = std::make_unique<SPHSystemSolver3d>();
+    // 3D case
+    //sph_system_solver = std::make_unique<SPHSystemSolver3d>();
+    
+    // 2D case
+    sph_system_solver = std::make_unique<SPHSystemSolver2d>();
+    
     //sph_visualization =  std::make_unique<SPHVisualization2D>();
 
     // 3D case
-    sph_system_solver->set_boundary_box(
-        Box<cato::Vec3d>(
-            cato::Vec3d(0.0, 0.0, 0.0),
-            cato::Vec3d(800.0, 600.0, 400.0)
-        )
-    );
-
-    
-    // // 2D case
     // sph_system_solver->set_boundary_box(
-    //     Box<cato::Vec2d>(
-    //         cato::Vec2d(400, 300),
-    //         cato::Vec2d(800.0, 600.0)
+    //     Box<cato::Vec3d>(
+    //         cato::Vec3d(0.0, 0.0, 0.0),
+    //         cato::Vec3d(800.0, 600.0, 400.0)
     //     )
     // );
 
-    // sph_system_solver->sphSystemData()->organize_particles_in_grid(
-	// 	cato::Vec2i(400, 300),
-	// 	cato::Vec2i(10, 10),
-	// 	cato::Vec2i(30, 30)
-	// );
+    
+    // 2D case
+    sph_system_solver->set_boundary_box(
+        Box<cato::Vec2d>(
+            cato::Vec2d(400, 300),
+            cato::Vec2d(800.0, 600.0)
+        )
+    );
+
 }
 
 Model::~Model() {}
@@ -42,29 +42,29 @@ void Model::simulate() {
         // Apply an interaction force at the mouse position
         cato::Vec2i mouse_pos = Controller::instance()->get_current_mouse_position();
         
-        // sph_system_solver->add_interaction_force(
-        //     cato::Vec2d(static_cast<double>(mouse_pos.x), static_cast<double>(600 - mouse_pos.y)),
-        //     200.0,
-        //     1500.0
-        // );
+        sph_system_solver->add_interaction_force(
+            cato::Vec2d(static_cast<double>(mouse_pos.x), static_cast<double>(600 - mouse_pos.y)),
+            200.0,
+            1500.0
+        );
         //std::cout << "Applying interaction force at (" << mouse_pos.x << ", " << (600 - mouse_pos.y) << ")\n";
     } else if (Controller::instance()->is_right_mouse_button_down()) {
         // Apply an interaction force at the mouse position
         cato::Vec2i mouse_pos = Controller::instance()->get_current_mouse_position();
-        // sph_system_solver->add_interaction_force(
-        //     cato::Vec2d(static_cast<double>(mouse_pos.x), static_cast<double>(600 - mouse_pos.y)),
-        //     200.0,
-        //     1500.0,
-        //     -1.0
-        // );
+        sph_system_solver->add_interaction_force(
+            cato::Vec2d(static_cast<double>(mouse_pos.x), static_cast<double>(600 - mouse_pos.y)),
+            200.0,
+            1500.0,
+            -1.0
+        );
         //std::cout << "Applying interaction force at (" << mouse_pos.x << ", " << (600 - mouse_pos.y) << ")\n";
     } else {
         // No interaction force
-        // sph_system_solver->add_interaction_force(
-        //     cato::Vec2d(0.0, 0.0),
-        //     0.0,
-        //     0.0
-        // );
+        sph_system_solver->add_interaction_force(
+            cato::Vec2d(0.0, 0.0),
+            0.0,
+            0.0
+        );
     }
     
     sph_system_solver->update(0.05);

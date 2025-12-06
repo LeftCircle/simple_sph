@@ -107,17 +107,17 @@ void Controller::keyboard( unsigned char key, int x, int y )
 		case 'r':{
 			// Reset particle positions
 			// // 2D case
-			// particle_system->organize_particles_in_grid(
-			// 	cato::Vec2i(400, 300),
-			// 	cato::Vec2i(10, 10),
-			// 	cato::Vec2i(30, 30)
-			// );
-
 			particle_system->organize_particles_in_grid(
-				cato::Vec3i(0, 0, 0),
-				cato::Vec3i(5, 5, 5),
-				cato::Vec3i(30, 40, 30)
+				cato::Vec2i(400, 300),
+				cato::Vec2i(10, 10),
+				cato::Vec2i(30, 30)
 			);
+
+			// particle_system->organize_particles_in_grid(
+			// 	cato::Vec3i(0, 0, 0),
+			// 	cato::Vec3i(5, 5, 5),
+			// 	cato::Vec3i(30, 40, 30)
+			// );
 			particle_system->clear_velocities();
 			std::cout << "Reset particle positions\n";
 			break;

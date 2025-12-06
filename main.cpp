@@ -38,11 +38,20 @@ int main(int argc, char** argv) {
 	//model->sph_system_solver->sphSystemData()->randomize_particles(50.0, 750.0, 50.0, 550.0);
 	//model->sph_system_solver->sphSystemData()->set_particle_position(0, cato::Vec2d(400.0, 300.0));
 	
+	// For 3D
+	// model->sph_system_solver->sphSystemData()->organize_particles_in_grid(
+    //     cato::Vec3i(0, 0, 0),
+    //     cato::Vec3i(10, 10, 10),
+    //     cato::Vec3i(30, 30, 30)
+    // );
+
+	// For 2D
 	model->sph_system_solver->sphSystemData()->organize_particles_in_grid(
-        cato::Vec3i(0, 0, 0),
-        cato::Vec3i(10, 10, 10),
-        cato::Vec3i(30, 30, 30)
-    );
+		cato::Vec2i(400, 300),
+		cato::Vec2i(10, 10),
+		cato::Vec2i(30, 30)
+	);
+
 	view->init(argc, argv, WINDOW_WIDTH, WINDOW_HEIGHT);
 
 	model->sph_system_solver->bind_boundary_box_verts();
