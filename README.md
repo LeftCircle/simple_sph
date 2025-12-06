@@ -3,6 +3,18 @@
 ## SPH Overview:
 Smoothed Particle Hydrodynamic (SPH) fluid simulations are a method for simulating fluids with particles. This method simplifies the calculations by approximating the navier stokes equations through weighted approximations of density and pressure calculations among particles. Particles are given a radius of influence around them, where the weight is defined by a kernel. The kernel is determined such that the area or volume of the kernel is always one. This is required in order to achieve uniform density throughout the fluid. Because SPH calculations are only approximations, the simulations are very dependent on the kernel, along with other chosen parameters that are used to model reality such as the particle masses, target densities, and equation of state coefficients used for the pressure calculations. 
 
+## Table of Contents
+- [Project Description](#project-description)
+  - [About The Code](#about-the-code)
+  - [Technical Learnings](#technical-learnings)
+  - [Workflow And Challenges](#workflow-and-challenges)
+  - [The Open Bugs And Areas For Improvement](#the-open-bugs-and-areas-for-improvement)
+- [Results](#results)
+- [Building And Running The Code.](#building-and-running-the-code)
+  - [Dependencies](#dependencies)
+  - [Running the code](#running-the-code)
+- [Summary](#summary)
+
 ## Project Description
 
 ### About The Code
