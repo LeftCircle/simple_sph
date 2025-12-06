@@ -1,4 +1,5 @@
-// NOTE - Written by Dr. Patterson for the Tech Art/Direction course
+// NOTE - Drawn VERY heavily from by Dr. Patterson's code for the Tech Art/Direction course. It is a very 
+// simple shader though, so there wasn't much to change. 
 
 #version 410 core
 
@@ -10,15 +11,12 @@ uniform mat4 view;
 uniform mat4 projection;
 uniform vec3 object_color;
 
-out vec3 normal_cam, pos_cam;
 out vec3 vertexColor;
 
 void main()
 {
     vec4 view_position = view * model * vec4(position, 1.0);
-    pos_cam = vec3 (view * model * vec4 (position, 1.0)); 
     gl_Position = projection * view_position;
-    normal_cam = normalize(vec3 (view * model * vec4(normal, 0.0)));
     vertexColor = object_color;
 }
 
