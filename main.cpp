@@ -22,21 +22,20 @@ int main(int argc, char** argv) {
 	}
 
 	if (argc < 2) {
-		std::cout << "Usage: " << argv[0] << " <num_particles>\n";
+		std::cout << "Usage: " << argv[0] << " <3> for 3D. Anything else means 2D\n";
 		return 1;
 	}
-	int num_particles = std::atoi(argv[1]);
+	bool use3D = std::atoi(argv[1]) == 3;
 
 	
 	View* view = create_view();
 	Controller* controller = create_controller();
 	
-	Model* model = create_model();
+	Model* model = create_model(use3D);
 	
-	model->sph_system_solver->sphSystemData()->set_radius(50.0);
-	//model->sph_system_solver->sphSystemData()->resize(num_particles);
-	//model->sph_system_solver->sphSystemData()->randomize_particles(50.0, 750.0, 50.0, 550.0);
-	//model->sph_system_solver->sphSystemData()->set_particle_position(0, cato::Vec2d(400.0, 300.0));
+	model->sph_system_solver2D->sphSystemData()->set_radius(50.0);
+	model->sph_system_solver3D->sphSystemData()->set_radius(20.0);
+	
 	
 	// For 3D
 	// model->sph_system_solver->sphSystemData()->organize_particles_in_grid(
@@ -46,16 +45,26 @@ int main(int argc, char** argv) {
     // );
 
 	// For 2D
-	model->sph_system_solver->sphSystemData()->organize_particles_in_grid(
-		cato::Vec2i(400, 300),
-		cato::Vec2i(10, 10),
-		cato::Vec2i(30, 30)
-	);
+	if (!use3D) {
+		model->sph_system_solver2D->sphSystemData()->organize_particles_in_grid(
+			cato::Vec2i(400, 300),
+			cato::Vec2i(10, 10),
+			cato::Vec2i(30, 30)
+		);
+	} else{
+		model->sph_system_solver3D->sphSystemData()->organize_particles_in_grid(
+			cato::Vec3i(0, 0, 0),
+			cato::Vec3i(10, 10, 10),
+			cato::Vec3i(30, 30, 30)
+		);
+	}
 
 	view->init(argc, argv, WINDOW_WIDTH, WINDOW_HEIGHT);
 
-	model->sph_system_solver->bind_boundary_box_verts();
-	model->sph_system_solver->particleSystem()->bind_particle_model_verts();
+	model->sph_system_solver2D->bind_boundary_box_verts();
+	model->sph_system_solver3D->bind_boundary_box_verts();
+	model->sph_system_solver2D->particleSystem()->bind_particle_model_verts();
+	model->sph_system_solver3D->particleSystem()->bind_particle_model_verts();
 
 
 	// model->sph_visualization->organize_particles_in_grid(

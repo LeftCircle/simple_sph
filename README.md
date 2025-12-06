@@ -1,4 +1,11 @@
 # 2D and 3D sph fluid simulations
+Richard Cato
+Clemson University
+CPSC 6040 - Computer Graphics
+
+For working links and a better reading experience, please see the Github Repository at:
+
+https://github.com/LeftCircle/simple_sph
 
 ## SPH Overview:
 Smoothed Particle Hydrodynamic (SPH) fluid simulations are a method for simulating fluids with particles. This method simplifies the calculations by approximating the navier stokes equations through weighted approximations of density and pressure calculations among particles. Particles are given a radius of influence around them, where the weight is defined by a kernel. The kernel is determined such that the area or volume of the kernel is always one. This is required in order to achieve uniform density throughout the fluid. Because SPH calculations are only approximations, the simulations are very dependent on the kernel, along with other chosen parameters that are used to model physical properties such as the particle masses, target densities, and equation of state coefficients used for the pressure calculations. 
@@ -84,16 +91,7 @@ sudo apt-get install build-essential libgl1-mesa-dev freeglut3-dev libglew-dev l
 ```
 
 ### Running the code
-To build the code, simply `make`, then `./bin/sph_sim [number_of_particles: int]`. As the program stands at the moment, the number of particles you pass in doesn't acctually affect anything. The particles are actually spawned in a grid, the code for which can be found in `main.cpp`. Once the simulation is running, press `c` to get a printout of the controls in order to adjust/toon the simulation for better results. I suggest increasing gravity to get the 3D simulation to work a bit better. And driving up the particle masses. 
-
-Switching between 2D and 3D actually takes a bit of work at the moment, and making this process more seamless is on the to do list. But as of right now here's a basic run down of what needs to be done:
-
-1. In `Model.h` Change the `SPHSystemSolver` to be either a `SPHSystemSolver2d` or `SPHsystemSolver3d`
-2. In `Model.cpp` in the constuction function, uncomment the block for either a 2D/3D bounding box. 
-3. In `Controller.cpp` swap out the box reset to 2D/3D when `r` is pressed
-3. If you want to interact with the code, uncomment the relevant code in `Model.cpp:simulate()`
-
-The current default values are set up for a pretty decent 2D simulation, so it could be worth going through the few steps to play around with that. 
+To build the code, simply `make`, then `./bin/sph_sim [Dimension]`. Dimension should be `3` for a 3D simulation, and anything else will do a 2D simulation. As the program stands at the moment, the number of particles you pass in doesn't acctually affect anything. The particles are actually spawned in a grid, the code for which can be found in `main.cpp`. Once the simulation is running, press `c` to get a printout of the controls in order to adjust/toon the simulation for better results. I suggest increasing gravity to get the 3D simulation to work a bit better. And driving up the particle masses. 
 
 
 ## Summary

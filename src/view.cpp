@@ -75,12 +75,21 @@ void View::display()
     //Model::instance()->sph_system_solver->update_graphics();
 	camera.lookat(camera.position, cato::Vec3f(0.0), cato::Vec3f(0, 1, 0));
 	camera.set_perspective_projection(35.0f, static_cast<float>(width) / static_cast<float>(height), 0.1f, 10000.0f);
-	Model::instance()->sph_system_solver->update_graphics(
-		particle_shader,
-		boundary_shader,
-		camera.view_mat,
-		camera.projection_mat
-	);
+	if (Model::instance()->is_using_3D()) {
+		Model::instance()->sph_system_solver3D->update_graphics(
+			particle_shader,
+			boundary_shader,
+			camera.view_mat,
+			camera.projection_mat
+		);
+	} else {
+		Model::instance()->sph_system_solver2D->update_graphics(
+			particle_shader,
+			boundary_shader,
+			camera.view_mat,
+			camera.projection_mat
+		);
+	}
 	// The fun visualization stuff
 	//Model::instance()->sph_visualization->update_graphics();
 	

@@ -2,26 +2,27 @@
 
 Model* Model::pModel = nullptr;
 
-Model::Model() {
+Model::Model(bool use3D) : use3D(use3D) {
     // 3D case
     //sph_system_solver = std::make_unique<SPHSystemSolver3d>();
     
     // 2D case
-    sph_system_solver = std::make_unique<SPHSystemSolver2d>();
+    sph_system_solver2D = std::make_unique<SPHSystemSolver2d>();
+    sph_system_solver3D = std::make_unique<SPHSystemSolver3d>();
     
     //sph_visualization =  std::make_unique<SPHVisualization2D>();
 
     // 3D case
-    // sph_system_solver->set_boundary_box(
-    //     Box<cato::Vec3d>(
-    //         cato::Vec3d(0.0, 0.0, 0.0),
-    //         cato::Vec3d(800.0, 600.0, 400.0)
-    //     )
-    // );
+    sph_system_solver3D->set_boundary_box(
+        Box<cato::Vec3d>(
+            cato::Vec3d(0.0, 0.0, 0.0),
+            cato::Vec3d(800.0, 600.0, 400.0)
+        )
+    );
 
     
     // 2D case
-    sph_system_solver->set_boundary_box(
+    sph_system_solver2D->set_boundary_box(
         Box<cato::Vec2d>(
             cato::Vec2d(400, 300),
             cato::Vec2d(800.0, 600.0)
@@ -32,8 +33,8 @@ Model::Model() {
 
 Model::~Model() {}
 
-Model* create_model() {
-	Model* model = Model::instance();    
+Model* create_model(bool use3D) {
+	Model* model = Model::instance(use3D);    
     return model;
 }
 
@@ -42,8 +43,14 @@ void Model::simulate() {
         // Apply an interaction force at the mouse position
         cato::Vec2i mouse_pos = Controller::instance()->get_current_mouse_position();
         
-        sph_system_solver->add_interaction_force(
+        sph_system_solver2D->add_interaction_force(
             cato::Vec2d(static_cast<double>(mouse_pos.x), static_cast<double>(600 - mouse_pos.y)),
+            200.0,
+            1500.0
+        );
+
+        sph_system_solver3D->add_interaction_force(
+            cato::Vec3d(static_cast<double>(mouse_pos.x), static_cast<double>(600 - mouse_pos.y), 200.0),
             200.0,
             1500.0
         );
@@ -51,8 +58,14 @@ void Model::simulate() {
     } else if (Controller::instance()->is_right_mouse_button_down()) {
         // Apply an interaction force at the mouse position
         cato::Vec2i mouse_pos = Controller::instance()->get_current_mouse_position();
-        sph_system_solver->add_interaction_force(
+        sph_system_solver2D->add_interaction_force(
             cato::Vec2d(static_cast<double>(mouse_pos.x), static_cast<double>(600 - mouse_pos.y)),
+            200.0,
+            1500.0,
+            -1.0
+        );
+        sph_system_solver3D->add_interaction_force(
+            cato::Vec3d(static_cast<double>(mouse_pos.x), static_cast<double>(600 - mouse_pos.y), 200.0),
             200.0,
             1500.0,
             -1.0
@@ -60,14 +73,23 @@ void Model::simulate() {
         //std::cout << "Applying interaction force at (" << mouse_pos.x << ", " << (600 - mouse_pos.y) << ")\n";
     } else {
         // No interaction force
-        sph_system_solver->add_interaction_force(
+        sph_system_solver2D->add_interaction_force(
             cato::Vec2d(0.0, 0.0),
+            0.0,
+            0.0
+        );
+        sph_system_solver3D->add_interaction_force(
+            cato::Vec3d(0.0, 0.0, 0.0),
             0.0,
             0.0
         );
     }
     
-    sph_system_solver->update(0.05);
+    if (use3D) {
+        sph_system_solver3D->update(0.05);
+    } else {
+        sph_system_solver2D->update(0.05);
+    }
 }
 
 void Model::on_J_pressed() {
@@ -84,10 +106,14 @@ void Model::on_up_arrow_pressed() {
     // Increase the radius of the particles and then update the densities. 
     // print out the density of the special particle
     //auto sph_data = sph_visualization->sph_data();
-    auto sph_data = sph_system_solver->sphSystemData();
+    auto sph_data = sph_system_solver2D->sphSystemData();
     double old_radius = sph_data->radius();
     double new_radius = old_radius * 1.1;
     sph_data->set_radius(new_radius);
+
+    auto sph_data3D = sph_system_solver3D->sphSystemData();
+    sph_data3D->set_radius(new_radius);
+
     std::cout << "Increased particle radius from " << old_radius << " to " << new_radius << "\n";
     // // 2D case
     // sph_data->build_neighbor_lookup(
@@ -107,5 +133,13 @@ void Model::on_up_arrow_pressed() {
 }
 
 void Model::on_down_arrow_pressed() {
+    auto sph_data = sph_system_solver2D->sphSystemData();
+    double old_radius = sph_data->radius();
+    double new_radius = old_radius * 0.9;
+    sph_data->set_radius(new_radius);
+
+    auto sph_data3D = sph_system_solver3D->sphSystemData();
+    sph_data3D->set_radius(new_radius);
+    std::cout << "Decreased particle radius from " << old_radius << " to " << new_radius << "\n";
 }
 
